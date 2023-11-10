@@ -1,0 +1,496 @@
+
+.dashboard-container{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    position: relative;
+    
+    flex-direction: row;
+}
+/* App.css */
+.dashboard-container {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+  }
+  
+  
+  
+  header {
+   
+    color: #ceb04f;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+     font-weight: bolder;
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+  }
+
+  .dropdown-contain{
+    flex: 0.2;
+    margin: 0px 0%;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .custom-dropdown {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+   
+  }
+  .dropdown{
+    cursor: pointer;
+  }
+  
+
+  .dropdown { 
+    color: #ceb04f; 
+} 
+  .dropdown-menu {
+    background-color: #EAEAEA; /* Set the background color to your desired color (#ceb04f) */
+    /* You can also set other styles as needed */
+    /* For example, you can change the text color or other properties */
+    color: #ceb04f; /* Text color (white in this example) */
+    /* Additional styles as needed */
+  }
+ 
+  
+  .list-count{
+    flex: 1;
+    border-radius: 16px;
+    background: #e0e0e0;
+    padding: 2%;
+    margin: 2%;
+    display: flex;
+    justify-content: flex-start; 
+    align-items: flex-start;  
+    flex-direction: column; 
+    position: relative;
+  }
+   
+  .name-list{
+      position: absolute;
+      top:1%;
+      left: 40%;
+      right: 40%;
+      color: #ceb04f;
+  }
+  .today-count{
+    flex: 0.5;
+    border-radius: 16px;
+background: #e0e0e0;
+   margin: 2%;
+   padding: 2%;
+   display: flex;
+   justify-content: flex-start; 
+   align-items: flex-start;  
+   flex-direction: column; 
+   position: relative;
+  }
+  .name2-list{
+    position: absolute;
+   top:1%;
+    left: 20%;
+    right: 20%;
+    color: #ceb04f;
+}
+  .content-containers{
+    display: flex;
+    flex-direction: row;
+    background: transparent;
+  }
+  
+  
+  
+
+  .heading{
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+  }
+  .settle{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    
+  }
+  
+  .slidebar-container {
+    width: 300px;
+   
+     flex: 0.20;
+     height: 100%;
+     background-color: #ceb04f;
+      
+    padding: 0px 0px;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  nav li {
+    margin-bottom: 15px;
+    padding: 10px;
+     
+    border-bottom: 2px solid #EAEAEA ;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: #EAEAEA;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  
+  
+  .close-button{
+    display: flex;
+  justify-content: flex-end;
+     margin: 0%;
+     padding: 0%;
+   width: 100%;
+    
+  
+  }
+  .logo{
+  margin-top: 0px;
+  flex: 0.9;
+  padding: 0%;
+ 
+  
+  }
+  .slidehead{
+      display: flex;
+  }
+
+  /* .card {
+    width: 500px;
+    height: 400px;
+    background-color:#EAEAEA;
+   
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 30px;
+    gap: 13px;
+  
+    position: relative;
+    overflow: hidden;
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.062);
+  }
+     */
+  .profile-card {
+     /* Position the card relative to the viewport */
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Set a high z-index to ensure it appears above other elements */
+     
+   
+    background: transparent;/* Set a background color for the card */
+    /* Add padding as needed */
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a shadow for a visual effect */
+    /* Additional styles for the card as needed */
+  }
+
+  .form-profile{
+    display: flex;
+   width: 30%;
+   flex-direction: column;
+    font-family: "Nunito", serif;
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    padding: 20px;
+    height: 100%;
+  }
+  .form-container1{
+    display: flex;
+    flex-wrap: wrap;
+      width: 60%;
+    height: auto;
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    justify-content: center;
+    align-items: center;
+    margin: 40px auto;
+  }
+  .image-container1{
+    width: 30%;
+    height: auto;
+         position: relative;
+         margin: 5%;
+  }
+
+  
+  .buttonContainer {
+    display: flex;
+    gap: 20px;
+    flex-direction: row;
+  }
+  
+  .SaveButton {
+    width: 80px;
+    height: 30px;
+    background-color: #ceb04f;
+    transition-duration: .2s;
+    border: none;
+    color: rgb(241, 241, 241);
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px -1px #ceb04f, 0 2px 4px -1px #ceb04f;
+    transition: all .6s ease;
+    margin: 20px 0px;
+  }
+  
+  .LogOutButton {
+    width: 80px;
+    height: 30px;
+    background-color: #dadada;
+    transition-duration: .2s;
+    color: rgb(46, 46, 46);
+    border: none;
+    cursor: not-allowed;
+    font-weight: 600;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px -1px #bebdbd, 0 2px 4px -1px #bebdbd;
+    transition: all .6s ease;
+    margin: 20px 0px;
+  }
+  
+  .LogOutButton:hover {
+    background-color: #ebebeb;
+    box-shadow: 0 10px 15px -3px #bebdbd, 0 4px 6px -2px #bebdbd;
+    transition-duration: .2s;
+  }
+  
+  .SaveButton:hover {
+    background-color: #ceb04f;
+    box-shadow: 0 10px 15px -3px #ceb04f, 0 4px 6px -2px #ceb04f;
+    transition-duration: .2s;
+  }
+
+  
+  .Form-detail{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1px;
+    flex-direction: column;
+  }
+  .dropdown-item:hover , .dropdown-toggle:hover{
+    background-color: #ceb04f;
+  }
+  .dropdown-item:active ,.dropdown-toggle:active{
+    background-color: #ceb04f !important;
+  }
+  .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active{
+    background-color: #ceb04f !important;
+    border-color: #ceb04f !important;
+  }
+  .form1-input{
+    display: block;
+    width: 80%;
+    margin: 10px 0px;
+    padding-left: 5px;
+    border: none;
+    background-color: transparent;
+    color: #EAEAEA;
+    
+  }
+  
+  .form1-input:hover  {
+    display: block;
+    width: 80%;
+    margin: 10px 0px;
+    padding-left: 5px;
+    border: none;
+    border-radius:5px;
+    border: 2px solid #ceb04f;
+    outline: none;
+    font-family: "Nunito", serif;
+    font-size: 1.125rem;
+    color: black;
+    background-color: #EAEAEA;
+  }
+
+ 
+  
+.card {
+  margin: 30px auto;
+  width: 20%;
+  height: 30%;
+  border-radius: 40px;
+box-shadow: 5px 5px 30px 7px rgba(0,0,0,0.25), -5px -5px 30px 7px rgba(0,0,0,0.22);
+  cursor: pointer;
+  transition: 0.4s;
+  background-color:rgba(206, 176, 79, 0.7);
+  display: flex;
+}
+
+.card:hover {
+  transform: scale(0.9, 0.9);
+  box-shadow: 5px 5px 30px 15px rgba(0,0,0,0.25), 
+    -5px -5px 30px 15px rgba(0,0,0,0.22);
+}
+
+ .card_image {
+  
+  border-radius: 40px;
+  flex:1;
+  font-size: 80px;
+  color: #EAEAEA;
+}
+
+
+
+ .card-title {
+
+  border-radius: 0px 0px 40px 40px;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+ 
+  height: 40px;
+  
+}
+
+.card-dash{
+  height: 100%;
+  width: 100%;
+  display: flex;
+ 
+ justify-content: flex-start;
+  flex-direction: row;
+}
+
+.MuiPopover-paper{
+  background-color: transparent !important;
+  color: #ceb04f;
+}
+.notification {
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+  position: relative;
+  width: 18rem;
+  height: 5rem;
+  background: #29292c ;
+  border-radius: 1rem;
+  overflow: hidden;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+  --gradient: linear-gradient(to bottom, #ceb04f, #EAEAEA, #61cdff);
+  color: #ceb04f;
+}
+
+
+
+
+.notification:before {
+  position: absolute;
+  content: "";
+  inset: 0.0625rem;
+  border-radius: 0.9375rem;
+  background: #18181b;
+  z-index: 2
+}
+
+.notification:after {
+  position: absolute;
+  content: "";
+  width: 0.25rem;
+  inset: 0.65rem auto 0.65rem 0.5rem;
+  border-radius: 0.125rem;
+  background: var(--gradient);
+  transition: transform 300ms ease;
+  z-index: 4;
+}
+
+.notification:hover:after {
+  transform: translateX(0.15rem)
+}
+
+.notititle {
+  color: var(--color);
+  padding: 0.65rem 0.25rem 0.4rem 1.25rem;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: transform 300ms ease;
+  z-index: 5;
+}
+
+.notification:hover .notititle {
+  transform: translateX(0.15rem)
+}
+
+.notibody {
+  color: #EAEAEA;
+  padding: 0 1.25rem;
+  transition: transform 300ms ease;
+  z-index: 5;
+}
+
+.rednotbody{
+ 
+    color: red;
+    padding: 0 1.25rem;
+    transition: transform 300ms ease;
+    z-index: 5;
+  
+}
+.notification:hover .notibody {
+  transform: translateX(0.25rem)
+}
+
+.notiglow,
+.notiborderglow {
+  position: absolute;
+  width: 20rem;
+  height: 20rem;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle closest-side at center, white, transparent);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.notiglow {
+  z-index: 3;
+}
+
+.notiborderglow {
+  z-index: 1;
+}
+
+.notification:hover .notiglow {
+  opacity: 0.1
+}
+
+.notification:hover .notiborderglow {
+  opacity: 0.1
+}
+
+.note {
+  color: var(--color);
+  position: fixed;
+  top: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 0.9rem;
+  width: 75%;
+}
