@@ -79,7 +79,7 @@ const NotificationModal = ({ open, handleClose, notification }) => {
                 style={{
                   margin: " 20px 10px",
                   textAlign: "center",
-                  backgroundColor: "rgba(0,0,0,0.6)",
+                  backgroundColor: "black",
                 }}
               >
                 <h1 style={{ color: "#ceb04f" }}>No notifications</h1>

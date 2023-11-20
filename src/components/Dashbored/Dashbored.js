@@ -102,7 +102,7 @@ const Dashboard = ({ children }) => {
       if (isLoggedIn) {
         try {
           const response = await fetch(
-            "http://localhost:4000/api/todo/DataSend",
+            "http://127.0.0.1:4000/api/todo/DataSend",
             {
               method: "POST",
               headers: {
@@ -123,7 +123,9 @@ const Dashboard = ({ children }) => {
                 "https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg"
               );
             } else {
-              setuserprofile(`http://127.0.0.1:4000${data.profileImage}`);
+              setuserprofile(
+                `https://res.cloudinary.com/dsvlrlr51/image/upload/${data.profileImage}`
+              );
             }
             // checkAndFetchNotifications();
             fetchNotifications();

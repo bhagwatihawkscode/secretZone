@@ -116,6 +116,12 @@ background: #e0e0e0;
     flex-direction: column;
     
   }
+  .setthis1{
+    font-weight: bold;
+    text-align: start;
+    
+   
+  }
   
   .slidebar-container {
     width: 300px;
@@ -218,7 +224,7 @@ background: #e0e0e0;
   .form-container1{
     display: flex;
     flex-wrap: wrap;
-      width: 60%;
+    width: 80%;
     height: auto;
     overflow: hidden;
     border-radius: 10px;
@@ -227,9 +233,11 @@ background: #e0e0e0;
     justify-content: center;
     align-items: center;
     margin: 40px auto;
+    
   }
   .image-container1{
     width: 30%;
+
     height: auto;
          position: relative;
          margin: 5%;
@@ -283,6 +291,62 @@ background: #e0e0e0;
     box-shadow: 0 10px 15px -3px #ceb04f, 0 4px 6px -2px #ceb04f;
     transition-duration: .2s;
   }
+  .form1 h1 {
+    text-align: start;
+    color: #ceb04f;
+    font-size: 2.5rem;
+   
+   }
+   .form1 label{
+    
+    
+   
+    color: #ceb04f;
+    font-weight: bold;
+    text-align: start;
+ }
+ .form1 .term{
+    margin-left: -30%;
+ 
+   }
+ .form1 button {
+   display: block;
+   width: 80%;
+   margin: 20px 0px;
+   border: none;
+   border-radius: 5px;
+   background-color: #ceb04f;
+   color: #EAEAEA;
+   font-family: "Nunito", serif;
+   font-size: 1.125rem;
+   cursor: pointer;
+     }
+
+     
+ 
+ .form1 button:hover {
+    background-color: #EAEAEA;
+    color: #ceb04f;
+     }
+ .form1 a{
+    display: block;
+    text-align: left;
+    color: #ceb04f;
+    padding-left: 10%;
+    text-decoration: none;
+     }
+ 
+  .form1 {
+    display: flex;
+    width: 70%;
+    flex-direction: column;
+     font-family: "Nunito", serif;
+     /* background-color: rgba(0, 0, 0, 0.5); */
+     padding: 20px;
+     height: 100%;
+     flex: 0.7;
+    
+       }
 
   
   .Form-detail{
@@ -330,46 +394,85 @@ background: #e0e0e0;
 
  
   
-.card {
-  margin: 30px auto;
-  width: 20%;
-  height: 30%;
-  border-radius: 40px;
-box-shadow: 5px 5px 30px 7px rgba(0,0,0,0.25), -5px -5px 30px 7px rgba(0,0,0,0.22);
-  cursor: pointer;
-  transition: 0.4s;
-  background-color:rgba(206, 176, 79, 0.7);
-  display: flex;
-}
-
-.card:hover {
-  transform: scale(0.9, 0.9);
-  box-shadow: 5px 5px 30px 15px rgba(0,0,0,0.25), 
-    -5px -5px 30px 15px rgba(0,0,0,0.22);
-}
-
- .card_image {
+  .uper-dash {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    margin: 30px 0;
+  }
   
-  border-radius: 40px;
-  flex:1;
-  font-size: 80px;
-  color: #EAEAEA;
-}
-
-
-
- .card-title {
-
-  border-radius: 0px 0px 40px 40px;
-  font-family: sans-serif;
-  font-weight: bold;
-  font-size: 30px;
- 
-  height: 40px;
+  .card {
+    margin: 15px auto;
+    width: 30%;
+    border-radius: 20px;
+    box-shadow: 5px 5px 20px 5px rgba(0, 0, 0, 0.25),
+                -5px -5px 20px 5px rgba(0, 0, 0, 0.22);
+    cursor: pointer;
+    transition: 0.4s;
+    flex-direction: column;
+    display: flex;
+    background-color: transparent;
+  }
   
-}
+  .card:hover {
+    transform: scale(0.95, 0.95);
+    box-shadow: 5px 5px 20px 10px rgba(0, 0, 0, 0.25),
+                -5px -5px 20px 10px rgba(0, 0, 0, 0.22);
+  }
+  
+  .card_image {
+    border-radius: 20px;
+    flex: 0.7;
+    font-size: 3rem;
+    color: #EAEAEA;
+    text-align: center;
+  }
+  
+  .card-title {
+    background-color: rgba(206, 176, 79, 0.7);
+    border-radius: 20px;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 1.6rem;
+    flex: 0.3;
+    height: 30px;
+    text-align: center;
+  }
+  @media screen and (max-width :768px) {
+    .form1-container {
+      flex-direction : column;
+      
+  }
+  .form1 button{
+    padding-left: 20px;
+    }
+  .image-container1 {
+     
+         
+      width: 100%;
+    }
+    .form1{
+      width :100%;
+    }
+  }
+  
+  
+  
 
 .card-dash{
+  height: 100%;
+  width: 100%;
+ 
+ display: flex;
+ justify-content: flex-start;
+  flex-direction: column;
+ 
+}
+.uper-dash{
+  flex:0.3;
   height: 100%;
   width: 100%;
   display: flex;
@@ -377,7 +480,15 @@ box-shadow: 5px 5px 30px 7px rgba(0,0,0,0.25), -5px -5px 30px 7px rgba(0,0,0,0.2
  justify-content: flex-start;
   flex-direction: row;
 }
+.slider-cont{
+  flex: 0.7;
 
+  display: flex; 
+
+  background-color: rgba(0, 0, 0, 0.2);
+ 
+
+}
 .MuiPopover-paper{
   background-color: transparent !important;
   color: #ceb04f;

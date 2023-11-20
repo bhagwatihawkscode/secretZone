@@ -22,6 +22,16 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+const mobileStyle = {
+  "@media (max-width: 767px)": {
+    width: "100%",
+    height: "100%",
+
+    top: "80%",
+    left: "80%",
+  },
+};
+const mergedStyle = { ...style, ...mobileStyle };
 
 const TransitionsModal = ({
   open,
@@ -95,7 +105,7 @@ const TransitionsModal = ({
         }}
       >
         <Fade in={open}>
-          <Box sx={style}>
+          <Box sx={mergedStyle}>
             <IconButton
               className="back-btn"
               style={{

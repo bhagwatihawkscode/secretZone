@@ -21,6 +21,8 @@ import "react-toastify/dist/ReactToastify.css";
 import NestedModal from "./parmanentUnclock";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import ClockModal from "./ClockModal";
+import ShareIcon from "@mui/icons-material/Share";
+import ShareModal from "./ShareModal";
 
 const Table = ({ data, isFetchData }) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -36,6 +38,8 @@ const Table = ({ data, isFetchData }) => {
   const [DeleteItemId, setDeleteItemId] = useState(null);
   const [isFavorited, setIsFavorited] = useState(false);
   const [isNestedModal, setIsNestedModal] = useState(false);
+  const [isShareModal, setIsShareModal] = useState(false);
+  const [shareId, setShareId] = useState();
   const [isClockModal, setIsClockModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -173,6 +177,14 @@ const Table = ({ data, isFetchData }) => {
     setIsNestedModal(false);
   };
 
+  const openShareModal = (key) => {
+    setIsShareModal(true);
+    setShareId(key);
+  };
+
+  const closeShareModal = () => {
+    setIsShareModal(false);
+  };
   const opeClockModal = (key) => {
     setIsClockModal(true);
     setClockId(key);
@@ -223,7 +235,7 @@ const Table = ({ data, isFetchData }) => {
                 <td>{formatDate(item.createdAt)}</td>
 
                 <td>{formatDate(item.updatedAt)}</td>
-                <td className="row-edit-btn-grp" style={{ margin: "10px" }}>
+                <td className="row-edit-btn-grp" style={{ margin: "5px" }}>
                   <div className="row-middle-btn-grp">
                     <Tooltip title="Unlock" placement="bottom">
                       <IconButton
@@ -248,18 +260,26 @@ const Table = ({ data, isFetchData }) => {
                   <Tooltip title="Edit" placement="bottom">
                     <IconButton
                       onClick={() => openModal(item._id)}
-                      style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+                      style={{
+                        backgroundColor: "rgba(0,0,0,0.7)",
+                        margin: "5px",
+                      }}
                     >
-                      <ModeEditIcon style={{ color: "#EAEAEA" }} />
+                      <ModeEditIcon
+                        style={{ color: "#EAEAEA", width: "20px" }}
+                      />
                     </IconButton>
                   </Tooltip>
 
                   <Tooltip title="Delete" placement="bottom">
                     <IconButton
                       onClick={() => openDelModal(item._id)}
-                      style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+                      style={{
+                        backgroundColor: "rgba(0,0,0,0.7)",
+                        margin: "5px",
+                      }}
                     >
-                      <DeleteIcon style={{ color: "#EAEAEA" }} />
+                      <DeleteIcon style={{ color: "#EAEAEA", width: "20px" }} />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Fav">
@@ -267,31 +287,53 @@ const Table = ({ data, isFetchData }) => {
                       onClick={() => {
                         onClickFav(item._id, item.isFavorited);
                       }}
-                      style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+                      style={{
+                        backgroundColor: "rgba(0,0,0,0.7)",
+                        margin: "5px",
+                      }}
                     >
                       {item.isFavorited === "true" ? (
-                        <FavoriteIcon style={{ color: "red" }} />
+                        <FavoriteIcon style={{ color: "red", width: "20px" }} />
                       ) : (
-                        <FavoriteBorderIcon style={{ color: "#EAEAEA" }} />
+                        <FavoriteBorderIcon
+                          style={{ color: "#EAEAEA", width: "20px" }}
+                        />
                       )}
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="PassWord" placement="bottom">
                     <IconButton
                       onClick={() => onCLickkey(item._id)}
-                      style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+                      style={{
+                        backgroundColor: "rgba(0,0,0,0.7)",
+                        margin: "5px",
+                      }}
                     >
-                      <KeyIcon style={{ color: "#EAEAEA" }} />
+                      <KeyIcon style={{ color: "#EAEAEA", width: "20px" }} />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="set Reminder" placement="bottom">
                     <IconButton
-                      style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+                      style={{
+                        backgroundColor: "rgba(0,0,0,0.7)",
+                        margin: "5px",
+                      }}
                       onClick={() => opeClockModal(item._id)}
                     >
-                      <AccessTimeFilledIcon style={{ color: "#EAEAEA" }} />
+                      <AccessTimeFilledIcon
+                        style={{ color: "#EAEAEA", width: "20px" }}
+                      />
                     </IconButton>
                   </Tooltip>
+                  <IconButton
+                    style={{
+                      backgroundColor: "rgba(0,0,0,0.7)",
+                      margin: "5px",
+                    }}
+                    onClick={() => openShareModal(item._id)}
+                  >
+                    <ShareIcon style={{ color: "#EAEAEA", width: "20px" }} />
+                  </IconButton>
                 </td>
               </tr>
             ))}
@@ -334,6 +376,14 @@ const Table = ({ data, isFetchData }) => {
         open={isNestedModal}
         handleClose={closeNestedModal}
         itemId={nestedId}
+        handleSuccess={handleSuccess}
+        handleError={handleError}
+        isFetch={fetchData}
+      />
+      <ShareModal
+        open={isShareModal}
+        handleClose={closeShareModal}
+        itemId={shareId}
         handleSuccess={handleSuccess}
         handleError={handleError}
         isFetch={fetchData}

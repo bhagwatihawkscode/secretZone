@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import DatePicker from "react-multi-date-picker";
 import Toolbar from "react-multi-date-picker/plugins/toolbar";
 import EditModal from "./EditModal";
+import Select from "react-select";
 
 const Secretlist = () => {
   const { state } = useLocation();
@@ -25,6 +26,11 @@ const Secretlist = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // console.log(Dates[0].toString());
+  const optionsdata = [
+    { value: "Select", label: "Select" },
+    { value: "Fav", label: "Favorite" },
+    { value: "NonFav", label: "Non Favorite" },
+  ];
 
   const handleSuccess = (msg) =>
     toast.success(msg, {
@@ -53,7 +59,7 @@ const Secretlist = () => {
       if (filterBy !== "Select") {
         if (isFavorited === true) {
           dataset.append("isFavorited", "true");
-        } else if (isFavorited === false) {
+        } else {
           dataset.append("isFavorited", "false");
         }
       }
@@ -95,7 +101,7 @@ const Secretlist = () => {
     };
 
     fetchDataAndCheckEditModal();
-  }, [modalClosedCount, searchText, Dates, filterBy, state]);
+  }, [modalClosedCount, Dates, isSearching, searchText, filterBy, state]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -110,14 +116,10 @@ const Secretlist = () => {
   };
 
   const handleSearch = () => {
-    setIsSearching(true);
-    fetchData();
+    setIsSearching(true, fetchData());
   };
 
-  const handleFilterChange = (event) => {
-    const selectedFilter = event.target.value;
-    setFilterBy(selectedFilter);
-
+  const handleFilterChange = (selectedFilter) => {
     if (selectedFilter === "Fav") {
       setIsFavorited(true);
     } else if (selectedFilter === "NonFav") {
@@ -126,7 +128,7 @@ const Secretlist = () => {
       setIsFavorited(null);
     }
 
-    fetchData();
+    setFilterBy(selectedFilter, fetchData);
   };
 
   return (
@@ -155,7 +157,7 @@ const Secretlist = () => {
               />
             </div>
             <div>
-              <select
+              {/* <select
                 className="select-btn"
                 value={filterBy}
                 onChange={handleFilterChange}
@@ -169,7 +171,16 @@ const Secretlist = () => {
                 <option className="options" value="NonFav">
                   Non Favorite
                 </option>
-              </select>
+              </select> */}
+              <Select
+                onChange={(selectedOption) =>
+                  handleFilterChange(selectedOption.value)
+                }
+                options={optionsdata}
+                defaultValue={{ label: filterBy, value: filterBy }}
+                className="basic-single"
+                classNamePrefix="basic-select"
+              />
 
               <DatePicker
                 value={Dates}
@@ -181,6 +192,7 @@ const Secretlist = () => {
                   <Toolbar
                     position="bottom"
                     names={{
+                      today: "todat Date",
                       deselect: "select none",
                       close: "close",
                     }}

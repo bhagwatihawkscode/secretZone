@@ -17,6 +17,13 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+const mobileStyle = {
+  "@media (max-width: 767px)": {
+    width: "100%",
+    height: "100%",
+  },
+};
+const mergedStyle = { ...style, ...mobileStyle };
 
 const PassModal = ({
   open,
@@ -27,25 +34,34 @@ const PassModal = ({
   handleError,
   handleSuccess,
 }) => {
-  const [password, setpassword] = useState();
+  const [errors, seterrors] = useState(false);
+  const [password, setpassword] = useState("");
+  const hnadlechange = (e) => {
+    setpassword(e.target.value);
+    seterrors(false);
+  };
   const userdata = {
     password: password,
     keyid: itemId,
   };
   const genratePass = async () => {
-    const data = await NormalCall(
-      userdata,
-      " http://127.0.0.1:4000/api/todo/GeneratePass"
-    );
-    const { statusCode, message } = data;
-
-    if (statusCode === 201) {
-      setpassword("");
-      handleSuccess(message);
-      isFetch();
-      handleClose();
+    if (password === "") {
+      seterrors(true);
     } else {
-      handleError(message);
+      const data = await NormalCall(
+        userdata,
+        " http://127.0.0.1:4000/api/todo/GeneratePass"
+      );
+      const { statusCode, message } = data;
+
+      if (statusCode === 201) {
+        setpassword("");
+        handleSuccess(message);
+        isFetch();
+        handleClose();
+      } else {
+        handleError(message);
+      }
     }
     isFetch();
   };
@@ -58,7 +74,7 @@ const PassModal = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={mergedStyle}>
           <div className="box-1">
             <h2 style={{ margin: " 10px", color: "#c79d15" }}>
               PassWord Generate
@@ -68,8 +84,9 @@ const PassModal = ({
             <input
               placeholder="PassWord"
               value={password}
-              onChange={(e) => setpassword(e.target.value)}
-              className="input3-tag"
+              onChange={(e) => hnadlechange(e)}
+              className={errors ? "errors-input" : "input3-tag"}
+              type="password"
             />
             {/* <input placeholder="Confirm PassWord" className="input3-tag" /> */}
             <div className="btn-div">

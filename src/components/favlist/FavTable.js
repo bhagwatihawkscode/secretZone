@@ -37,6 +37,7 @@ const FavTable = ({ data, isFaveApi }) => {
   const [keyids, setkeyId] = useState();
 
   if (!data || data.length === 0) {
+    console.log("data 0 aaya");
     return (
       <div className="table-container">
         <h1 style={{ color: "#ceb04f", margin: "30px" }}>No Secrects Found</h1>

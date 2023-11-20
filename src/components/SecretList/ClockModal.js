@@ -24,6 +24,13 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+const mobileStyle = {
+  "@media (max-width: 767px)": {
+    width: "100%",
+    height: "100%",
+  },
+};
+const mergedStyle = { ...style, ...mobileStyle };
 
 const ClockModal = ({
   open,
@@ -83,7 +90,7 @@ const ClockModal = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={mergedStyle}>
           <div className="box-1">
             <h2 style={{ margin: " 10px", color: "#ceb04f" }}>Set Reminder</h2>
             <div className="underline-title" style={{ margin: " 10px" }}></div>

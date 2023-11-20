@@ -7,13 +7,14 @@ import { useEffect, useState } from "react";
 import "../Login/Auth.css";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-
+import "../SecretList/Secret.css";
 import { validation } from "../Login/validation";
 import { _Api } from "../../Api";
 
 const ProfileCard = () => {
   const [userData, setuserData] = useState({});
   const [images, setImages] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [image, setImage] = useState();
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const ProfileCard = () => {
       navigate("/login");
     }
     try {
-      const response = await fetch("http://localhost:4000/api/todo/DataSend", {
+      const response = await fetch("http://127.0.0.1:4000/api/todo/DataSend", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,15 +94,26 @@ const ProfileCard = () => {
     testData.append("email", userData.email);
     testData.append("Address", userData.Address);
     testData.append("images", userData.profileImage);
-    for (let [key, value] of testData.entries()) {
+
+    const checkdata = new FormData();
+    checkdata.append("file", image);
+    checkdata.append("userId", userData._id);
+    checkdata.append("name", userData.name);
+    checkdata.append("email", userData.email);
+    checkdata.append("Address", userData.Address);
+
+    for (let [key, value] of checkdata.entries()) {
       const check = validation(key, value);
+      console.log(check);
       if (!check[key]) {
         errors[key] = true;
       }
     }
 
     setFormErrors(errors);
+
     if (Object.keys(errors).length === 0) {
+      setIsLoading(true);
       const response = await _Api(
         testData,
         "http://127.0.0.1:4000/api/todo/update"
@@ -112,10 +124,17 @@ const ProfileCard = () => {
         handleSuccess(message);
         setTimeout(() => {
           fetchData();
+          // Clear loading state when the image update is successful
+          setIsLoading(false);
         }, 2000);
       } else {
         handleError(message);
+        // Clear loading state when there is an error in the image update
+        setIsLoading(false);
       }
+    } else {
+      // Clear loading state when there are validation errors
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -124,9 +143,11 @@ const ProfileCard = () => {
         "https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg"
       );
     } else {
-      setImages(`http://127.0.0.1:4000${userData.profileImage}`);
+      setImages(
+        `https://res.cloudinary.com/dsvlrlr51/image/upload/${userData.profileImage}`
+      );
     }
-  }, [userData]);
+  }, [userData, userData.profileImage]);
 
   return (
     <div className="main">
@@ -151,30 +172,43 @@ const ProfileCard = () => {
           <CloseIcon />
         </IconButton>
         <div className="image-container1">
-          <div className="profile-pic">
-            <label className="-label" htmlFor="file">
-              <span className="glyphicon glyphicon-camera" />
-              <span>Change Image</span>
-            </label>
-            <input
-              className="profile-input"
-              id="file"
-              type="file"
-              name="file"
-              onChange={handleChange}
-            />
-            <img
-              className="profile-img"
-              src={images}
-              id="output"
-              alt="User Profile"
-            />
-          </div>
+          {isLoading ? (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <div className="loader"></div>
+            </div>
+          ) : (
+            <div className="profile-pic">
+              <label className="-label" htmlFor="file">
+                <span className="glyphicon glyphicon-camera" />
+                <span>Change Image</span>
+              </label>
+              <input
+                className="profile-input"
+                id="file"
+                type="file"
+                name="file"
+                onChange={handleChange}
+              />
+              <img
+                className="profile-img"
+                src={images}
+                id="output"
+                alt="User Profile"
+              />
+            </div>
+          )}
 
           <h3 style={{ color: "#ceb04f", margin: "10px" }}>Profile</h3>
         </div>
-        <div className="form">
-          <h1 className="setthis" style={{ margin: "10px" }}>
+        <div className="form1">
+          <h1 className="setthis1" style={{ margin: "" }}>
             User Profile
           </h1>
           <label for="name">Name</label>

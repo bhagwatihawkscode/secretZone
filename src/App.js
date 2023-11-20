@@ -8,6 +8,7 @@ import Secretlist from "./components/SecretList/Secretlist";
 import ProfileCard from "./components/Dashbored/ProfileCard";
 import Dashcontent from "./components/Dashbored/Dashcontent";
 import FavList from "./components/favlist/FavList";
+import YourComponent from "./components/imagestaking/imagetakeform";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/image" element={<YourComponent />}></Route>
         <Route
           path="/DashBored"
           element={

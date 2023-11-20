@@ -17,6 +17,13 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+const mobileStyle = {
+  "@media (max-width: 767px)": {
+    width: "100%",
+    height: "100%",
+  },
+};
+const mergedStyle = { ...style, ...mobileStyle };
 
 const PassVerifyModal = ({
   open,
@@ -26,27 +33,36 @@ const PassVerifyModal = ({
   handleError,
   handleSuccess,
 }) => {
-  const [password, setpassword] = useState();
+  const [password, setpassword] = useState("");
+  const [errors, seterrors] = useState(false);
+  const hnadlechange = (e) => {
+    setpassword(e.target.value);
+    seterrors(false);
+  };
 
   const handleUnlock = async () => {
-    const userdata = {
-      password: password,
-      keyid: itemId,
-    };
-    const data = await NormalCall(
-      userdata,
-      " http://127.0.0.1:4000/api/todo/PasswordVerify"
-    );
-    const { success, message } = data;
-    if (success === true) {
-      unlockRowCallback(itemId);
-      handleSuccess(message);
-      setpassword("");
-      handleClose();
+    if (password === "") {
+      seterrors(true);
     } else {
-      handleClose();
-      setpassword("");
-      handleError(message);
+      const userdata = {
+        password: password,
+        keyid: itemId,
+      };
+      const data = await NormalCall(
+        userdata,
+        "http://127.0.0.1:4000/api/todo/PasswordVerify"
+      );
+      const { success, message } = data;
+      if (success === true) {
+        unlockRowCallback(itemId);
+        handleSuccess(message);
+        setpassword("");
+        handleClose();
+      } else {
+        handleClose();
+        setpassword("");
+        handleError(message);
+      }
     }
   };
 
@@ -58,7 +74,7 @@ const PassVerifyModal = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={mergedStyle}>
           <div className="box-1">
             <h2 style={{ margin: " 10px", color: "#c79d15" }}>PassWord</h2>
             <div className="underline-title"></div>
@@ -67,8 +83,8 @@ const PassVerifyModal = ({
               placeholder="PassWord"
               type="password"
               value={password}
-              onChange={(e) => setpassword(e.target.value)}
-              className="input3-tag"
+              onChange={(e) => hnadlechange(e)}
+              className={errors ? "errors-input" : "input3-tag"}
             />
             {/* <input placeholder="Confirm PassWord" className="input3-tag" /> */}
             <div className="btn-div">

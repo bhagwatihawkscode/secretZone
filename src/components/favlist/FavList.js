@@ -19,11 +19,11 @@ const FavSecretlist = () => {
 
       if (isSearching) {
         dataset.append("query", searchText);
+      }
 
-        if (Dates.length === 2) {
-          dataset.append("start", Dates[0].toString());
-          dataset.append("end", Dates[1].toString());
-        }
+      if (Dates.length === 2) {
+        dataset.append("start", Dates[0].toString());
+        dataset.append("end", Dates[1].toString());
       }
 
       const response = await _Api(dataset, apiURL);
