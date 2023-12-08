@@ -74,6 +74,9 @@
         
        
       }
+      .forgetpass{
+        font-weight: lighter;
+      }
       .form-textarea{
         display: block;
         width: 80%;
@@ -214,5 +217,9 @@
     }
     .form{
       width :100%;
+      justify-content: center;
+    }
+    .form h1{
+      margin-top: 10px;
     }
   }

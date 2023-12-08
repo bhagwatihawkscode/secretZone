@@ -70,10 +70,7 @@ const Dashboard = ({ children }) => {
     setAnchorEl(null);
   };
   const ClearNotification = async () => {
-    const resp = await NormalCall(
-      "",
-      "http://127.0.0.1:4000/api/todo/ClearNotification"
-    );
+    await NormalCall("", "http://127.0.0.1:4000/api/todo/ClearNotification");
 
     handleClose();
   };
@@ -88,8 +85,18 @@ const Dashboard = ({ children }) => {
           "http://127.0.0.1:4000/api/todo/CheckDays"
         );
         if (res) {
-          fetchNotifications();
-          openModal();
+          // Check if the notification modal has been shown
+          const hasNotificationModalBeenShown = localStorage.getItem(
+            "notificationModalShown"
+          );
+
+          if (!hasNotificationModalBeenShown) {
+            fetchNotifications();
+            openModal();
+
+            // Set the flag in localStorage to indicate that the modal has been shown
+            localStorage.setItem("notificationModalShown", "true");
+          }
         } else {
           setIsModalOpen(false);
         }
@@ -101,34 +108,39 @@ const Dashboard = ({ children }) => {
     async function fetchData() {
       if (isLoggedIn) {
         try {
-          const response = await fetch(
-            "http://127.0.0.1:4000/api/todo/DataSend",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                authorization: localStorage.getItem("token"),
-              },
-              credentials: "include",
-            }
-          );
+          // Check if user profile image URL is in local storage
+          const storedProfileImage = localStorage.getItem("userProfileImage");
 
-          if (!response.ok) {
-            navigate("/login");
+          if (storedProfileImage) {
+            setuserprofile(storedProfileImage);
           } else {
-            const responseData = await response.json();
-            const { data } = responseData;
-            if (data.profileImage === "" || !data.profileImage) {
-              setuserprofile(
-                "https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg"
-              );
+            const response = await fetch(
+              "http://127.0.0.1:4000/api/todo/DataSend",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  authorization: localStorage.getItem("token"),
+                },
+                credentials: "include",
+              }
+            );
+
+            if (!response.ok) {
+              navigate("/login");
             } else {
-              setuserprofile(
-                `https://res.cloudinary.com/dsvlrlr51/image/upload/${data.profileImage}`
-              );
+              const responseData = await response.json();
+              const { data } = responseData;
+              // Update state and local storage with user profile image URL
+              const userProfileImage =
+                data.profileImage === ""
+                  ? "https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg"
+                  : `https://res.cloudinary.com/dsvlrlr51/image/upload/${data.profileImage}`;
+              setuserprofile(userProfileImage);
+
+              // Fetch notifications
+              fetchNotifications();
             }
-            // checkAndFetchNotifications();
-            fetchNotifications();
           }
         } catch (error) {
           console.error("Error:", error);
@@ -166,9 +178,9 @@ const Dashboard = ({ children }) => {
   };
 
   const handleLogoutClick = () => {
-    localStorage.removeItem("token");
+    localStorage.clear();
     setIsLoggedIn("");
-    window.location.reload();
+    navigate("/login");
   };
 
   return (
@@ -208,7 +220,13 @@ const Dashboard = ({ children }) => {
                   padding: "10px",
                 }}
               >
-                <div>
+                <div
+                  className="Scrollhide"
+                  style={{
+                    height: "400px",
+                    overflowY: "scroll",
+                  }}
+                >
                   <div
                     style={{
                       display: "flex",
@@ -278,7 +296,7 @@ const Dashboard = ({ children }) => {
                         backgroundColor: "rgba(0,0,0,0.6)",
                       }}
                     >
-                      <h1 style={{ color: "#ceb04f" }}>No notifications</h1>
+                      <h3 style={{ color: "#ceb04f" }}>No notifications</h3>
                     </div>
                   )}
                 </div>
@@ -296,7 +314,7 @@ const Dashboard = ({ children }) => {
 
               <Dropdown.Menu className="dropdown-menu">
                 <Dropdown.Item onClick={() => navigate("/Profile")}>
-                  View Profile
+                  Profile
                 </Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
@@ -314,6 +332,7 @@ const Dashboard = ({ children }) => {
           handleClose={closeModal}
           notification={notification}
         />
+
         <div className="content">{children}</div>
       </div>
     </div>

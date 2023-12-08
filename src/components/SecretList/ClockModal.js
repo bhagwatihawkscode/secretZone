@@ -1,35 +1,35 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
-import "./Secret.css";
-
 import Modal from "@mui/material/Modal";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import { NormalCall } from "../../Api";
+import dayjs from "dayjs";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "30%",
-  bgcolor: "rgba(0,0,0,0.7)",
+  width: "40%",
+  bgcolor: "rgba(0,0,0,1)",
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
+
 const mobileStyle = {
   "@media (max-width: 767px)": {
     width: "100%",
     height: "100%",
   },
 };
+
 const mergedStyle = { ...style, ...mobileStyle };
 
 const ClockModal = ({
@@ -41,44 +41,68 @@ const ClockModal = ({
   handleSuccess,
 }) => {
   const [Days, setDays] = React.useState("");
-  const [value, setValue] = React.useState();
+  const [value, setValue] = React.useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await NormalCall(
+          clockid,
+          "http://127.0.0.1:4000/api/todo/clockmodaldatasend"
+        );
+
+        if (result && result.time) {
+          setDays(result.userDays);
+
+          try {
+            // Format the date as a string
+            const formattedDate = result.time;
+            setValue(dayjs(formattedDate));
+          } catch (error) {
+            console.error("Error formatting date:", error);
+          }
+        } else {
+          setDays("");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle error fetching data
+      }
+    };
+    fetchData();
+  }, [clockid, open]);
 
   const handleChange = (event) => {
     setDays(event.target.value);
   };
 
   const Done = async () => {
-    const date = value.$d;
-    // const hour = date.getHours();
-    // const minute = date.getMinutes();
+    try {
+      let datasets = {
+        reminderTime: value,
+        userdays: Days,
+        rowid: clockid,
+        updatestatus: "0",
+        expair: "0",
+      };
 
-    // Create the formatted time string
-    // const formattedTime = `${hour.toString().padStart(2, "0")}:${minute
-    //   .toString()
-    //   .padStart(2, "0")}:00`;
+      const data = await NormalCall(
+        datasets,
+        "http://127.0.0.1:4000/api/todo/setReminder"
+      );
 
-    // console.log(formattedTime);
-
-    let datasets = {
-      reminderTime: date,
-      userdays: Days,
-      rowid: clockid,
-      updatestatus: "0",
-      expair: "0",
-    };
-
-    const data = await NormalCall(
-      datasets,
-      "http://127.0.0.1:4000/api/todo/setReminder"
-    );
-    const { success, message } = data;
-    if (success === true) {
-      setDays("");
-      setValue("");
-      handleSuccess(message);
-      handleClose();
-    } else {
-      handleError(message);
+      const { success, message } = data;
+      if (success === true) {
+        setDays("");
+        setValue("");
+        handleSuccess(message);
+        handleClose();
+      } else {
+        handleError(message);
+      }
+    } catch (error) {
+      console.error("Error setting reminder:", error);
+      // Handle error setting reminder
     }
   };
 
@@ -90,7 +114,7 @@ const ClockModal = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={mergedStyle}>
+        <Box sx={mergedStyle} className="modal-mobile">
           <div className="box-1">
             <h2 style={{ margin: " 10px", color: "#ceb04f" }}>Set Reminder</h2>
             <div className="underline-title" style={{ margin: " 10px" }}></div>
@@ -155,7 +179,7 @@ const ClockModal = ({
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
                 label="Time"
-                value={value}
+                value={value || null}
                 onChange={(newValue) => setValue(newValue)}
               />
             </LocalizationProvider>
@@ -164,7 +188,7 @@ const ClockModal = ({
                 Set
               </button>
               <button className="canncel-btn" onClick={() => handleClose()}>
-                canncel
+                CANCEL
               </button>
             </div>
           </div>
@@ -173,4 +197,5 @@ const ClockModal = ({
     </div>
   );
 };
+
 export default ClockModal;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./Secret.css";
@@ -9,7 +9,7 @@ const RichTextEditor = ({ value, onChange, customclassName }) => {
       container: [
         [{ header: "1" }, { header: "2" }, { font: [] }],
         [{ list: "ordered" }, { list: "bullet" }],
-        ["bold", "italic", "underline"],
+        ["bold", "italic", "underline","color"],
         ["link", "image", "draw"],
         ["clean"],
       ],

@@ -114,8 +114,19 @@ background: #e0e0e0;
     flex:1;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
     
   }
+  .settle::-webkit-scrollbar {
+  width: 0.1em; 
+  
+}
+
+.settle::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5);
+   
+}
   .setthis1{
     font-weight: bold;
     text-align: start;
@@ -406,7 +417,7 @@ background: #e0e0e0;
   
   .card {
     margin: 15px auto;
-    width: 30%;
+    width: 23%;
     border-radius: 20px;
     box-shadow: 5px 5px 20px 5px rgba(0, 0, 0, 0.25),
                 -5px -5px 20px 5px rgba(0, 0, 0, 0.22);
@@ -415,6 +426,7 @@ background: #e0e0e0;
     flex-direction: column;
     display: flex;
     background-color: transparent;
+   
   }
   
   .card:hover {
@@ -430,7 +442,15 @@ background: #e0e0e0;
     color: #EAEAEA;
     text-align: center;
   }
-  
+  .css-1jy569b-MuiFormLabel-root-MuiInputLabel-root{
+    color: #EAEAEA !important;
+  }
+  .css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root{
+    color: #ceb04f !important;
+  }
+  .css-1u3bzj6-MuiFormControl-root-MuiTextField-root{
+    width: 100%;
+  }
   .card-title {
     background-color: rgba(206, 176, 79, 0.7);
     border-radius: 20px;
@@ -440,6 +460,10 @@ background: #e0e0e0;
     flex: 0.3;
     height: 30px;
     text-align: center;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 10px;
   }
   @media screen and (max-width :768px) {
     .form1-container {
@@ -449,6 +473,9 @@ background: #e0e0e0;
   .form1 button{
     padding-left: 20px;
     }
+    .dash-bar{
+      width: 50%!important; 
+    }
   .image-container1 {
      
          
@@ -456,6 +483,13 @@ background: #e0e0e0;
     }
     .form1{
       width :100%;
+    }
+    .card{
+      width :100%;
+    }
+    .uper-dash{
+      flex-direction: column !important;
+
     }
   }
   
@@ -481,12 +515,12 @@ background: #e0e0e0;
   flex-direction: row;
 }
 .slider-cont{
-  flex: 0.7;
+  flex: 0.3;
 
   display: flex; 
 
-  background-color: rgba(0, 0, 0, 0.2);
  
+ justify-content: center;
 
 }
 .MuiPopover-paper{
@@ -568,6 +602,16 @@ background: #e0e0e0;
   transform: translateX(0.25rem)
 }
 
+.Scrollhide::-webkit-scrollbar {
+  width: 1px; 
+  
+}
+
+.Scrollhide::-webkit-scrollbar-thumb {
+  background-color:transparent;
+   
+}
+
 .notiglow,
 .notiborderglow {
   position: absolute;
@@ -593,6 +637,11 @@ background: #e0e0e0;
 
 .notification:hover .notiborderglow {
   opacity: 0.1
+}
+canvas.bhagu{
+  width:100% !important;
+  height:100% !important;
+  color: #EAEAEA !important;
 }
 
 .note {

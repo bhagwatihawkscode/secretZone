@@ -6,6 +6,11 @@ import { IconButton } from "@mui/material";
 import logo from "../../assests/logo.png";
 
 const Slidebar = ({ onClose }) => {
+  const handleLogoutClick = () => {
+    localStorage.clear();
+
+    window.location.reload();
+  };
   return (
     <div className="slidebar-container">
       <div className="close-button">
@@ -25,13 +30,25 @@ const Slidebar = ({ onClose }) => {
       <nav style={{ margin: "12px" }}>
         <ul>
           <li>
-            <Link to="/Dashbored">Dashboard</Link>
+            <Link to="/DashBoard">Dashboard</Link>
           </li>
           <li>
             <Link to="/Secretlist">Secrets List</Link>
           </li>
           <li>
             <Link to="/FavList">Favorites List</Link>
+          </li>
+          <li>
+            <Link to="/SecretFile">Secrets File</Link>
+          </li>
+          <li>
+            <Link
+              onClick={() => {
+                handleLogoutClick();
+              }}
+            >
+              LogOut
+            </Link>
           </li>
         </ul>
       </nav>

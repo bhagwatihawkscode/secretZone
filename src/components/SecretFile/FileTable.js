@@ -4,28 +4,33 @@ import "../SecretList/Secret.css";
 import { IconButton } from "@mui/material";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { NormalCall, _Api } from "../../Api";
+
+import { NormalCall } from "../../Api";
 import ReactPaginate from "react-paginate";
-import EditModal from "../SecretList/EditModal";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import DeleteModal from "../SecretList/DeleteModel";
+import FileEditModal from "./FileEditModal";
+import FilePassModal from "./FilePassGenrate";
+import FileDeleteModal from "./FileDeleteModal";
 import KeyIcon from "@mui/icons-material/Key";
-import PassModal from "../SecretList/PassGenModal";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import LockIcon from "@mui/icons-material/Lock";
 import KeyOffIcon from "@mui/icons-material/KeyOff";
-import PassVerifyModal from "../SecretList/PassVerifyModal";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import NestedModal from "../SecretList/parmanentUnclock";
-import SkeletonFile from "../SecretFile/SkeletonFile";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import FileNestedModal from "./passUnloack";
+import FilePassVerifyModal from "./Filepassverify";
+import DownloadIcon from "@mui/icons-material/Download";
+import axios from "axios";
+import ShareIcon from "@mui/icons-material/Share";
+import FileShareModal from "./FileShareModal";
+import SkeltonFileComp from "./SkeletonFile";
 import SpeedDial from "@mui/material/SpeedDial";
 import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import { useMediaQuery } from "@mui/material";
-const FavTable = ({ data, isFaveApi }) => {
+
+const FileTable = ({ data, isFetchData }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -40,6 +45,8 @@ const FavTable = ({ data, isFaveApi }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lockedRows, setLockedRows] = useState({});
   const [keyids, setkeyId] = useState();
+  const [isShareModal, setIsShareModal] = useState(false);
+  const [shareId, setShareId] = useState();
   const [showMobileActions, setShowMobileActions] = useState({});
 
   const isMobile = useMediaQuery("(max-width: 600px)");
@@ -63,13 +70,14 @@ const FavTable = ({ data, isFaveApi }) => {
       </div>
     );
   }
+
   const fetchData = async () => {
     try {
       setIsLoading(true);
 
       // Fetch data here
 
-      await isFaveApi();
+      await isFetchData();
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -127,7 +135,7 @@ const FavTable = ({ data, isFaveApi }) => {
 
       const data = await NormalCall(
         keyid,
-        "http://127.0.0.1:4000/api/todo/checkPassGen"
+        "http://127.0.0.1:4000/api/todo/privacyokornot"
       );
 
       if (data === true) {
@@ -153,22 +161,65 @@ const FavTable = ({ data, isFaveApi }) => {
     toast.error(err, {
       position: "top-right",
     });
-  const onClickFav = async (itemId, fav) => {
-    const data = new FormData();
+  // const onClickDownload = async (itemId) => {
+  //   const data = new FormData();
 
-    data.append("isFavorited", fav === "true" ? false : true);
-    data.append("_id", itemId);
+  //   data.append("keyid", itemId);
+  //   const response = await _Api(
+  //     data,
+  //     "http://127.0.0.1:4000/api/todo/downloadzip"
+  //   );
+  //   if (response) {
+  //     const arrayBuffer = await response.arrayBuffer();
+  //     const blob = new Blob([arrayBuffer], { type: "application/zip" });
 
-    const response = await _Api(
-      data,
-      "http://127.0.0.1:4000/api/todo/favUpdat"
-    );
-    const { success } = response;
-    if (success) {
-      fetchData();
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = "download.zip";
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     window.URL.revokeObjectURL(url);
+  //   }
+  // };
+  const onClickDownload = async (itemId, fileName) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:4000/api/todo/downloadzip",
+        { keyid: itemId },
+        {
+          responseType: "blob",
+        }
+      );
+
+      if (response.status !== 200) {
+        throw new Error(`Download failed with status ${response.status}`);
+      }
+
+      handleSuccess("Download Start");
+      const blob = new Blob([response.data], { type: "application/zip" });
+      const downloadLink = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = downloadLink;
+      link.download = fileName;
+      link.click();
+    } catch (error) {
+      console.error(error);
     }
   };
 
+  // Function to extract filename from Content-Disposition header
+
+  const openShareModal = (key) => {
+    setIsShareModal(true);
+    setShareId(key);
+  };
+
+  const closeShareModal = () => {
+    setIsShareModal(false);
+  };
   const openVerifyModal = (key) => {
     setisVerifyModal(true);
     setverifykey(key);
@@ -200,13 +251,14 @@ const FavTable = ({ data, isFaveApi }) => {
         // >
         //   <div className="loader"></div>
         // </div>
-        <SkeletonFile />
+        <SkeltonFileComp />
       ) : (
         <table className="table" style={{ backgroundColor: "transparent" }}>
           <thead>
             <tr>
               <th>Secrets</th>
               <th>Title</th>
+              <th>File Names</th>
               <th>Create At</th>
               <th>Update At</th>
               <th>Action</th>
@@ -226,6 +278,8 @@ const FavTable = ({ data, isFaveApi }) => {
               >
                 <td>{offset + index + 1}</td>
                 <td>{item.Title}</td>
+                <td>{item.FileName}</td>
+
                 <td>{formatDate(item.createdAt)}</td>
 
                 <td>{formatDate(item.updatedAt)}</td>
@@ -277,22 +331,6 @@ const FavTable = ({ data, isFaveApi }) => {
                             <DeleteIcon style={{ color: "#EAEAEA" }} />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Fav">
-                          <IconButton
-                            onClick={() => {
-                              onClickFav(item._id, item.isFavorited);
-                            }}
-                            style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
-                          >
-                            {item.isFavorited === "true" ? (
-                              <FavoriteIcon style={{ color: "red" }} />
-                            ) : (
-                              <FavoriteBorderIcon
-                                style={{ color: "#EAEAEA" }}
-                              />
-                            )}
-                          </IconButton>
-                        </Tooltip>
                         <Tooltip title="PassWord" placement="bottom">
                           <IconButton
                             onClick={() => onCLickkey(item._id)}
@@ -301,6 +339,27 @@ const FavTable = ({ data, isFaveApi }) => {
                             <KeyIcon style={{ color: "#EAEAEA" }} />
                           </IconButton>
                         </Tooltip>
+                        <Tooltip title="Download">
+                          <IconButton
+                            onClick={() => {
+                              onClickDownload(item._id, item.FileName);
+                            }}
+                            style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+                          >
+                            <DownloadIcon style={{ color: "#EAEAEA" }} />
+                          </IconButton>
+                        </Tooltip>
+                        <IconButton
+                          style={{
+                            backgroundColor: "rgba(0,0,0,0.7)",
+                            margin: "5px",
+                          }}
+                          onClick={() => openShareModal(item._id)}
+                        >
+                          <ShareIcon
+                            style={{ color: "#EAEAEA", width: "20px" }}
+                          />
+                        </IconButton>
                       </>
                     ) : (
                       <>
@@ -339,26 +398,7 @@ const FavTable = ({ data, isFaveApi }) => {
                             tooltipTitle="Delete"
                             onClick={() => openDelModal(item._id)}
                           />
-                          <SpeedDialAction
-                            icon={
-                              item.isFavorited === "true" ? (
-                                <FavoriteIcon
-                                  style={{ color: "red", width: "40px" }}
-                                />
-                              ) : (
-                                <FavoriteBorderIcon
-                                  style={{
-                                    color: "black",
-                                    width: "40px",
-                                  }}
-                                />
-                              )
-                            }
-                            tooltipTitle="Fav"
-                            onClick={() => {
-                              onClickFav(item._id, item.isFavorited);
-                            }}
-                          />
+
                           <SpeedDialAction
                             icon={
                               <KeyIcon
@@ -367,6 +407,16 @@ const FavTable = ({ data, isFaveApi }) => {
                             }
                             tooltipTitle="Lock"
                             onClick={() => onCLickkey(item._id)}
+                          />
+
+                          <SpeedDialAction
+                            icon={
+                              <ShareIcon
+                                style={{ color: "black", width: "40px" }}
+                              />
+                            }
+                            tooltipTitle="Share"
+                            onClick={() => openShareModal(item._id)}
                           />
                         </SpeedDial>
                       </>
@@ -378,7 +428,7 @@ const FavTable = ({ data, isFaveApi }) => {
           </tbody>
         </table>
       )}
-      <EditModal
+      <FileEditModal
         open={isModalOpen}
         handleClose={closeModal}
         itemId={selectedItemId}
@@ -386,7 +436,7 @@ const FavTable = ({ data, isFaveApi }) => {
         handleError={handleError}
         isFetch={fetchData}
       />
-      <DeleteModal
+      <FileDeleteModal
         open={isDeleteOpen}
         handleClose={closeDelModal}
         itemId={DeleteItemId}
@@ -394,7 +444,7 @@ const FavTable = ({ data, isFaveApi }) => {
         handleSuccess={handleSuccess}
         handleError={handleError}
       />
-      <PassModal
+      <FilePassModal
         open={iskeyOpen}
         handleClose={closekeyModal}
         isFetch={fetchData}
@@ -402,7 +452,15 @@ const FavTable = ({ data, isFaveApi }) => {
         handleSuccess={handleSuccess}
         handleError={handleError}
       />
-      <PassVerifyModal
+      <FileShareModal
+        open={isShareModal}
+        handleClose={closeShareModal}
+        itemId={shareId}
+        handleSuccess={handleSuccess}
+        handleError={handleError}
+        isFetch={fetchData}
+      />
+      <FilePassVerifyModal
         open={isVerifyModal}
         handleClose={closeVerifyModal}
         itemId={verifykey}
@@ -410,7 +468,7 @@ const FavTable = ({ data, isFaveApi }) => {
         handleSuccess={handleSuccess}
         handleError={handleError}
       />
-      <NestedModal
+      <FileNestedModal
         open={isNestedModal}
         handleClose={closeNestedModal}
         itemId={nestedId}
@@ -445,4 +503,4 @@ const FavTable = ({ data, isFaveApi }) => {
     </div>
   );
 };
-export default FavTable;
+export default FileTable;

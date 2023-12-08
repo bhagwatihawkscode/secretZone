@@ -15,7 +15,7 @@ const ProfileCard = () => {
   const [userData, setuserData] = useState({});
   const [images, setImages] = useState();
   const [isLoading, setIsLoading] = useState(false);
-
+  const [previewImage, setPreviewImage] = useState(null);
   const [image, setImage] = useState();
   const navigate = useNavigate();
 
@@ -38,6 +38,9 @@ const ProfileCard = () => {
         const responseData = await response.json();
 
         setuserData(responseData.data);
+        if (userData.profileImage) {
+          localStorage.setItem("images", userData.profileImage);
+        }
       } else {
         // Redirect to the login page if the response is not successful
         navigate("/login");
@@ -59,18 +62,17 @@ const ProfileCard = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setImage(e.target.result);
+        setPreviewImage(e.target.result); // Set the preview image URL
+        setuserData({ ...userData, [name]: value, image: file }); // Set the file directly in userData
       };
       reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null); // Clear the preview image if no file is selected
+      setuserData({ ...userData, [name]: value, image: null }); // Clear the file in userData
     }
-
-    // Add the file to the userData object
-
-    setuserData({ ...userData, [name]: value, image });
 
     // Clear the error for this field when it changes
     setFormErrors({ ...formErrors, [name]: false });
-    // console.log(userData)
   };
 
   const handleSuccess = (msg) =>
@@ -88,7 +90,7 @@ const ProfileCard = () => {
     const errors = {};
 
     let testData = new FormData();
-    testData.append("file", image);
+    testData.append("file", previewImage);
     testData.append("userId", userData._id);
     testData.append("name", userData.name);
     testData.append("email", userData.email);
@@ -96,7 +98,7 @@ const ProfileCard = () => {
     testData.append("images", userData.profileImage);
 
     const checkdata = new FormData();
-    checkdata.append("file", image);
+    checkdata.append("file", previewImage);
     checkdata.append("userId", userData._id);
     checkdata.append("name", userData.name);
     checkdata.append("email", userData.email);
@@ -104,7 +106,7 @@ const ProfileCard = () => {
 
     for (let [key, value] of checkdata.entries()) {
       const check = validation(key, value);
-      console.log(check);
+
       if (!check[key]) {
         errors[key] = true;
       }
@@ -126,6 +128,7 @@ const ProfileCard = () => {
           fetchData();
           // Clear loading state when the image update is successful
           setIsLoading(false);
+          sessionStorage.setItem("flag", true);
         }, 2000);
       } else {
         handleError(message);
@@ -146,6 +149,10 @@ const ProfileCard = () => {
       setImages(
         `https://res.cloudinary.com/dsvlrlr51/image/upload/${userData.profileImage}`
       );
+      localStorage.setItem(
+        "userProfileImage",
+        `https://res.cloudinary.com/dsvlrlr51/image/upload/${userData.profileImage}`
+      );
     }
   }, [userData, userData.profileImage]);
 
@@ -157,7 +164,7 @@ const ProfileCard = () => {
           handleSaveClick(e);
         }}
       >
-        <IconButton
+        {/* <IconButton
           className="back-btn"
           style={{
             position: "absolute",
@@ -170,7 +177,7 @@ const ProfileCard = () => {
           }}
         >
           <CloseIcon />
-        </IconButton>
+        </IconButton> */}
         <div className="image-container1">
           {isLoading ? (
             <div
@@ -198,14 +205,14 @@ const ProfileCard = () => {
               />
               <img
                 className="profile-img"
-                src={images}
+                src={previewImage || images}
                 id="output"
                 alt="User Profile"
               />
             </div>
           )}
 
-          <h3 style={{ color: "#ceb04f", margin: "10px" }}>Profile</h3>
+          <h3 style={{ color: "#ceb04f", margin: "10px" }}>Profile Image</h3>
         </div>
         <div className="form1">
           <h1 className="setthis1" style={{ margin: "" }}>

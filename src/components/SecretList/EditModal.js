@@ -7,6 +7,7 @@ import RichTextEditor from "./TextComp";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { _Api } from "../../Api";
+import AddressAutocomplete from "./AutoCompleteInput";
 
 const style = {
   position: "absolute",
@@ -14,7 +15,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "40%",
-  height: "85%",
+  height: "90%",
   bgcolor: "rgba(0,0,0,0.7)",
   border: "2px solid #000",
   boxShadow: 24,
@@ -35,17 +36,26 @@ const EditModal = ({
   isFetch,
   handleError,
   handleSuccess,
+  permission,
 }) => {
+  const [disableedit, setdisable] = useState(true);
   const [title, setTitle] = useState("");
   const [richTextContent, setRichTextContent] = useState("");
   const [iddata, setIdData] = useState("");
+  const [address, setAddress] = useState("");
+
+  const [addressInput, setAddressInput] = useState("");
   const [errors, setErrors] = useState({
     title: false,
     richTextContent: false,
+    address: false,
   });
 
   useEffect(() => {
     const fetchData = async () => {
+      if (permission === "1") {
+        setdisable(false);
+      }
       const item = new FormData();
       item.append("key", itemId);
       const response = await _Api(
@@ -57,20 +67,33 @@ const EditModal = ({
       if (data) {
         setTitle(data.Title || ""); // Set default value if data.Title is undefined
         setRichTextContent(data.Content || ""); // Set default value if data.Content is undefined
-        setIdData(data._id || ""); // Set default value if data._id is undefined
+        setIdData(data._id || "");
+        setAddress(data.Location || "");
+        setAddressInput(data.Location || "");
+        console.log(data.Location); // Set default value if data._id is undefined
       }
     };
     if (open) {
       fetchData();
     }
-  }, [itemId, open]);
+  }, [itemId, open, permission]);
+  const handleSelect = (data) => {
+    if (!data) {
+      setAddress(address);
+    }
+    setAddress(
+      data.properties.address_line1 + " " + data.properties.address_line2
+    );
+    setErrors({ ...errors, address: false });
+  };
 
   const handleUpdateClick = async () => {
     const data = new FormData();
-    if (title === "" || richTextContent === "") {
+    if (title === "" || richTextContent === "" || address === "") {
       setErrors({
         title: title === "",
         richTextContent: richTextContent === "",
+        address: address === "",
       });
     } else {
       setErrors({ title: false, richTextContent: false });
@@ -78,6 +101,7 @@ const EditModal = ({
       data.append("Title", title);
       data.append("Content", richTextContent);
       data.append("_id", iddata);
+      data.append("Location", address);
 
       try {
         const response = await _Api(
@@ -136,24 +160,41 @@ const EditModal = ({
               <CloseIcon />
             </IconButton>
             <div className="Add-box">
-              <h3 style={{ color: "#ceb04f" }}>Title</h3>
-              <input
-                className={errors.title ? "Notmodel-input" : "model-input"}
-                placeholder="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <br />
-              <h3 style={{ color: "#ceb04f" }}>Secrets</h3>
+              <div
+                style={{
+                  pointerEvents: disableedit ? "auto" : "none",
+                }}
+              >
+                <h3 style={{ color: "#ceb04f" }}>Title</h3>
+                <input
+                  className={errors.title ? "Notmodel-input" : "model-input"}
+                  placeholder="Title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+                <br />
+                <h3 style={{ color: "#ceb04f" }}>Location</h3>
+                <AddressAutocomplete
+                  placeholder={address}
+                  onSelect={handleSelect}
+                  // New prop for address input change
+                  valueadd={addressInput} // Use separate state for address input
+                  customclassName={
+                    errors.address ? "Notmodel-input" : "model-input"
+                  }
+                />
+                <h3 style={{ color: "#ceb04f" }}>Secrets</h3>
 
-              <RichTextEditor
-                customclassName={
-                  errors.richTextContent ? "Notcustom-editor" : "custom-editor"
-                }
-                value={richTextContent}
-                onChange={setRichTextContent}
-              />
-
+                <RichTextEditor
+                  customclassName={
+                    errors.richTextContent
+                      ? "Notcustom-editor"
+                      : "custom-editor"
+                  }
+                  value={richTextContent}
+                  onChange={setRichTextContent}
+                />
+              </div>
               <div
                 className="btn-div"
                 style={{
@@ -162,11 +203,13 @@ const EditModal = ({
                   right: "10px",
                 }}
               >
-                <button className="add1-btn" onClick={handleUpdateClick}>
-                  Save
-                </button>
+                {disableedit ? (
+                  <button className="add1-btn" onClick={handleUpdateClick}>
+                    Save
+                  </button>
+                ) : null}
                 <button className="canncel-btn" onClick={handleClose}>
-                  Cancel
+                  CANCEL
                 </button>
               </div>
             </div>

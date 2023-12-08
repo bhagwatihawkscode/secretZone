@@ -1,58 +1,260 @@
 import React, { useEffect } from "react";
 import { NormalCall } from "../../Api";
 import { useState } from "react";
+import "../SecretList/Secret.css";
+import LineChart from "./crousalpage";
 import "./DashBored.css";
-import ImageCarousel from "./crousalpage";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import TopicIcon from "@mui/icons-material/Topic";
+import ShareLocationIcon from "@mui/icons-material/ShareLocation";
+import TodayIcon from "@mui/icons-material/Today";
+
+import TextField from "@mui/material/TextField";
+import { _Api } from "../../Api";
 const Dashcontent = () => {
   const [todaycount, settodaycount] = useState();
   const [TotalCount, setTotalCount] = useState();
+  const [TotalFileCount, setTotalFileCount] = useState();
+  const [dataCount, setdataCount] = useState([]);
+  const [dataFileCount, setdataFileCount] = useState([]);
+  const [Locationcount, setLocationcount] = useState();
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const [isLoading, setIsLoading] = useState(true);
+  const [anchorEl, setAnchorEl] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState("");
+  const [searchHistory, setSearchHistory] = React.useState([]);
+
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchValue(value);
+
+    // If search bar is cleared, close the Popper
+    if (value === "") {
+      setAnchorEl(false);
+    }
+  };
+
+  const handleSearchKeyPress = async (event) => {
+    if (event.key === "Enter") {
+      setAnchorEl(true);
+      // Update search history here if needed
+      let apiURL = "http://127.0.0.1:4000/api/todo/LocationFilter";
+      const dataset = new FormData();
+      dataset.append("query", searchValue);
+      const response = await _Api(dataset, apiURL);
+      const { arraydata } = await response;
+
+      setSearchHistory(arraydata);
+    }
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "search-popper" : undefined;
   const fetchData = async () => {
     if (isLoggedIn) {
-      const data = await NormalCall(
-        "",
-        "http://127.0.0.1:4000/api/todo/DashboardApi"
-      );
-      const { todayCount, totalCount } = data;
-      settodaycount(todayCount);
-      setTotalCount(totalCount);
+      try {
+        const data1 = await NormalCall(
+          "",
+          "http://127.0.0.1:4000/api/todo/DashboardApi"
+        );
+        const week = await NormalCall(
+          "",
+          "http://127.0.0.1:4000/api/todo/weekdayscount"
+        );
+
+        const { todayCount, totalCount, totalFileCount, uniqueLocationsCount } =
+          data1;
+        settodaycount(todayCount);
+        setTotalCount(totalCount);
+        setTotalFileCount(totalFileCount);
+        setLocationcount(uniqueLocationsCount);
+        setdataCount(week.data);
+        setdataFileCount(week.FileData);
+        setIsLoading(false); // Set loading to false when data is fetched
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false); // Set loading to false in case of an error
+      }
     } else {
       setIsLoggedIn("");
+      setIsLoading(false); // Set loading to false if not logged in
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, [todaycount, TotalCount, isLoggedIn]);
+  }, [todaycount, TotalCount, isLoggedIn, TotalFileCount, Locationcount]);
 
   return (
     <div className="card-dash">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          padding: "5px",
+          borderRadius: "20px",
+        }}
+      >
+        <h1 style={{ color: "#ceb04f" }}>DashBoard</h1>
+        <div
+          style={{ position: "relative", width: "25%" }}
+          className="dash-bar"
+        >
+          <TextField
+            aria-describedby={id}
+            type="text"
+            value={searchValue}
+            onChange={handleSearchChange}
+            onKeyDown={handleSearchKeyPress}
+            label="Search"
+          />
+          {anchorEl && (
+            <div
+              className="autocomplete-items"
+              style={{
+                width: "100%", // Set the width to 100% to match the TextField
+                position: "absolute",
+                top: "100%", // Adjust as needed
+                left: 0,
+                zIndex: 1,
+              }}
+            >
+              {searchHistory.map((item, index) => (
+                <div
+                  key={index}
+                  style={{
+                    margin: "10px",
+                    backgroundColor: "#ceb04f",
+                    borderRadius: "10px",
+                  }}
+                >
+                  Secret Title: {item}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
       <div className="uper-dash">
         <div className="card">
           <div className="card-title ">
-            <p style={{ color: "#EAEAEA" }}>Total Secrets</p>
+            <ListAltIcon style={{ color: "#EAEAEA" }} />
+            <p style={{ color: "#EAEAEA", marginBottom: "0rem" }}>
+              Total Secrets
+            </p>
           </div>
-          <div className="card_image">{TotalCount}</div>
+          {isLoading ? (
+            // Show loader while data is being fetched
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <div className="loader"></div>
+            </div>
+          ) : (
+            // Show LineChart when data is available
+            <div className="card_image">{TotalCount}</div>
+          )}
         </div>
         <div className="card">
           <div className="card-title ">
-            <p style={{ color: "#EAEAEA" }}>Today Secret</p>
+            <TodayIcon style={{ color: "#EAEAEA" }} />
+            <p style={{ color: "#EAEAEA", marginBottom: "0rem" }}>
+              Today Secret
+            </p>
           </div>
-          <div className="card_image">{todaycount}</div>
+          {isLoading ? (
+            // Show loader while data is being fetched
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <div className="loader"></div>
+            </div>
+          ) : (
+            // Show LineChart when data is available
+            <div className="card_image">{todaycount}</div>
+          )}
+        </div>
+        <div className="card">
+          <div className="card-title ">
+            <TopicIcon style={{ color: "#EAEAEA" }} />
+            <p style={{ color: "#EAEAEA", marginBottom: "0rem" }}>
+              Total Secret File
+            </p>
+          </div>
+          {isLoading ? (
+            // Show loader while data is being fetched
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <div className="loader"></div>
+            </div>
+          ) : (
+            // Show LineChart when data is available
+            <div className="card_image">{TotalFileCount}</div>
+          )}
+        </div>
+        <div className="card">
+          <div className="card-title ">
+            <ShareLocationIcon style={{ color: "#EAEAEA" }} />
+            <p style={{ color: "#EAEAEA", marginBottom: "0rem" }}>Locations</p>
+          </div>
+          {isLoading ? (
+            // Show loader while data is being fetched
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <div className="loader"></div>
+            </div>
+          ) : (
+            // Show LineChart when data is available
+            <div className="card_image">{Locationcount}</div>
+          )}
         </div>
       </div>
       <div className="slider-cont">
-        <ImageCarousel />
-        {/* 
-        <img
-          style={{
-            width: "100%",
-            objectFit: "contain",
-            verticalAlign: "middle",
-          }}
-          src="https://cdn.mos.cms.futurecdn.net/dP3N4qnEZ4tCTCLq59iysd.jpg"
-          alt="test"
-        /> */}
+        {isLoading ? (
+          // Show loader while data is being fetched
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div className="loader"></div>
+          </div>
+        ) : (
+          // Show LineChart when data is available
+
+          <LineChart dataCount={dataCount} dataFileCount={dataFileCount} />
+        )}
       </div>
     </div>
   );

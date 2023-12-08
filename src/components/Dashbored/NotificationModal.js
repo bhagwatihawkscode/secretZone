@@ -36,7 +36,10 @@ const NotificationModal = ({ open, handleClose, notification }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <div>
+          <div
+            className="Scrollhide"
+            style={{ height: "400px", overflowY: "scroll" }}
+          >
             {notification.length !== 0 ? (
               notification.map((item, index) => (
                 <div
@@ -92,7 +95,7 @@ const NotificationModal = ({ open, handleClose, notification }) => {
             style={{ display: "flex", justifyContent: "center" }}
           >
             <button className="canncel-btn" onClick={() => handleClose()}>
-              canncel
+              CANCEL
             </button>
           </div>
         </Box>

@@ -1,21 +1,40 @@
 import React, { useState, useEffect } from "react";
 import "../SecretList/Secret.css";
-import Table from "./FavTable";
+
+import FileAddModal from "./FileAddModal";
+import { _Api } from "../../Api";
+import FileTable from "./FileTable";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import DatePicker from "react-multi-date-picker";
 import Toolbar from "react-multi-date-picker/plugins/toolbar";
-import { _Api } from "../../Api";
-import SkeletonFile from "../SecretFile/SkeletonFile";
 
-const FavSecretlist = () => {
+import SkeltonFileComp from "./SkeletonFile";
+
+const SecretFile = () => {
   const [TableData, setTableData] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalClosedCount, setModalClosedCount] = useState(0);
   const [searchText, setSearchText] = useState("");
+
   const [Dates, setDate] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
+
+  const handleSuccess = (msg) =>
+    toast.success(msg, {
+      position: "top-right",
+    });
+
+  const handleError = (err) =>
+    toast.error(err, {
+      position: "top-right",
+    });
 
   const fetchData = async () => {
     try {
-      let apiURL = "http://127.0.0.1:4000/api/todo/FavSearchFilter";
+      let apiURL = "http://127.0.0.1:4000/api/todo/FileFilter";
       const dataset = new FormData();
 
       if (isSearching) {
@@ -37,14 +56,30 @@ const FavSecretlist = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-    fetchData().then(() => {
+      // Fetch data here
+
+      fetchData();
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
       setInterval(() => {
         setIsLoading(false);
       }, 1000);
-    });
-  }, [isSearching, Dates.length === 2]);
+    }
+  }, [modalClosedCount, Dates.length === 2, isSearching]);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalClosedCount((prevCount) => prevCount + 1);
+  };
+
   const handleSearch = () => {
     // setIsSearching((prevSearch) => !prevSearch);
     setIsSearching(true);
@@ -55,12 +90,14 @@ const FavSecretlist = () => {
       setIsSearching(false);
     }
   };
-
   return (
     <div className="Secret-list-container">
       <div className="main-secrets">
         <header className="secret-list-header">
-          <h1>Favorite List</h1>
+          <h1>Secret File</h1>
+          <button className="add-btn" onClick={openModal}>
+            ADD YOUR File+
+          </button>
         </header>
         <div className="tables-container">
           <div className="search-div1">
@@ -72,7 +109,6 @@ const FavSecretlist = () => {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 onKeyDown={(e) => {
-                  // Check if Enter key is pressed
                   if (e.key === "Enter") {
                     handleSearch();
                   }
@@ -83,7 +119,6 @@ const FavSecretlist = () => {
               <DatePicker
                 value={Dates}
                 onChange={setDate}
-                range
                 containerStyle={{
                   margin: "10px",
 
@@ -91,13 +126,14 @@ const FavSecretlist = () => {
                   color: "#ceb04f",
                   width: "90%",
                 }}
+                range
                 numberOfMonths={2}
                 placeholder="Select Date"
                 plugins={[
                   <Toolbar
                     position="bottom"
                     names={{
-                      today: "today date",
+                      today: "todat Date",
                       deselect: "select none",
                       close: "close",
                     }}
@@ -118,14 +154,21 @@ const FavSecretlist = () => {
             // >
             //   <div className="loader"></div>
             // </div>
-            <SkeletonFile />
+            <SkeltonFileComp />
           ) : (
-            <Table data={TableData} isFaveApi={fetchData} />
+            <FileTable data={TableData} isFetchData={fetchData} />
           )}
         </div>
       </div>
+      <ToastContainer />
+      <FileAddModal
+        open={isModalOpen}
+        handleClose={closeModal}
+        handleSuccess={handleSuccess}
+        handleError={handleError}
+      />
     </div>
   );
 };
 
-export default FavSecretlist;
+export default SecretFile;

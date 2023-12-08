@@ -3,17 +3,16 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import "react-phone-number-input/style.css";
 
-import "./Secret.css";
-import Select from "react-select";
+import "../SecretList/Secret.css";
 import { NormalCall } from "../../Api";
 import { IconButton } from "@mui/material";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "50%",
+  width: "30%",
   bgcolor: "rgba(0,0,0,0.7)",
   border: "2px solid #000",
   boxShadow: 24,
@@ -29,60 +28,7 @@ const mobileStyle = {
 };
 const mergedStyle = { ...style, ...mobileStyle };
 
-function CopyLink({
-  itemId,
-
-  filterBy,
-  userName,
-}) {
-  const [copied, setCopied] = React.useState(false);
-  const handleCopyLink = async () => {
-    try {
-      // Generate the link
-      const dataobj = {
-        id: itemId,
-        permission: filterBy,
-        accessuser: userName,
-      };
-      const data = await NormalCall(
-        dataobj,
-        "http://127.0.0.1:4000/api/todo/generatelink"
-      );
-
-      // Set the generated link in the state
-
-      // Copy the link to the clipboard
-      navigator.clipboard
-        .writeText(data.link) // Use the latest link value directly here
-        .then(() => {
-          setCopied(true);
-        })
-        .catch((error) => {
-          console.error("Error copying to clipboard:", error);
-        });
-    } catch (error) {
-      console.error("Error generating link:", error);
-    }
-  };
-
-  return (
-    <React.Fragment>
-      <IconButton onClick={handleCopyLink}>
-        <ContentCopyIcon />
-      </IconButton>
-      {copied ? <span style={{ color: "#c79d15" }}>Link copied </span> : null}
-    </React.Fragment>
-  );
-}
-
-function WhatsappModal({
-  itemId,
-  handleError,
-  handleSuccess,
-  closingfun,
-  filterBy,
-  userName,
-}) {
+function WhatsappModal({ itemId, handleError, handleSuccess, closingfun }) {
   // const handleChange = (value) => {
   //   setPhoneNumber(value);
   //   setErrors(false);
@@ -94,15 +40,10 @@ function WhatsappModal({
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
       );
-    const dataobj = {
-      id: itemId,
-      permission: filterBy,
-      accessuser: userName,
-      isMobile: isMobile,
-    };
+    const setdata = { childId: itemId, isMobile: isMobile };
     const response = await NormalCall(
-      dataobj,
-      "http://127.0.0.1:4000/api/todo/whatsappsend"
+      setdata,
+      "http://127.0.0.1:4000/api/todo/Whatsappsendzip"
     );
     const { whatsappUrl, statusCode, message } = response;
 
@@ -156,14 +97,7 @@ function WhatsappModal({
     </React.Fragment>
   );
 }
-function GmailModal({
-  itemId,
-  handleError,
-  handleSuccess,
-  closingfun,
-  filterBy,
-  userName,
-}) {
+function GmailModal({ itemId, handleError, handleSuccess, closingfun }) {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const handleOpen = () => {
@@ -186,12 +120,7 @@ function GmailModal({
     return regex.test(email);
   };
 
-  const setdata = {
-    email: email,
-    id: itemId,
-    permission: filterBy,
-    accessuser: userName,
-  };
+  const setdata = { email: email, childId: itemId };
   const unlock = async () => {
     if (validateEmail(email)) {
       try {
@@ -199,7 +128,7 @@ function GmailModal({
 
         const response = await NormalCall(
           setdata,
-          "http://127.0.0.1:4000/api/todo/mailsend"
+          "http://127.0.0.1:4000/api/todo/Emailsendzip"
         );
 
         const { statusCode, message } = response;
@@ -309,7 +238,7 @@ function GmailModal({
   );
 }
 
-export default function ShareModal({
+export default function FileShareModal({
   open,
   handleClose,
   itemId,
@@ -317,49 +246,14 @@ export default function ShareModal({
   handleSuccess,
   isFetch,
 }) {
-  const [filterBy, setFilterBy] = React.useState("1");
-  const [users, setusers] = React.useState("");
-  const [Apidata, setApiData] = React.useState([]);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await NormalCall(
-          "",
-          "http://127.0.0.1:4000/api/todo/alluserslist"
-        );
-
-        setApiData(response);
-      } catch (error) {
-        console.error("Error fetching API data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-  const optionsdata = [
-    { value: "1", label: "View Only" },
-    { value: "2", label: "Can Edit" },
-  ];
-
-  const handleFilterChange = (selectedFilter) => {
-    setFilterBy(selectedFilter);
-  };
-  const userData = [{ value: "", label: "All" }];
-  const combineData = [...userData, ...Apidata];
-
-  const handleChangeuser = (selectedFilter) => {
-    setusers(selectedFilter);
-  };
   const closing = true;
 
   const closingfun = (ok) => {
     if (closing === ok) {
-      isFetch();
       handleClose();
+      isFetch();
     }
   };
-
   return (
     <div>
       <Modal
@@ -368,80 +262,26 @@ export default function ShareModal({
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{ ...mergedStyle, width: "40%" }}>
+        <Box sx={{ ...mergedStyle, width: 400 }}>
           <h2 id="parent-modal-title" style={{ color: "#ceb04f" }}>
-            Share Secrets
+            Share Secrets File
           </h2>
           <div className="underline-title"></div>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                width: "50%",
-                margin: "3px",
-              }}
-            >
-              <label style={{ color: "#c79d15" }}> Select Permission</label>
-              <Select
-                onChange={(selectedOption) =>
-                  handleFilterChange(selectedOption.value)
-                }
-                options={optionsdata}
-                defaultValue={{ label: "View Only", value: filterBy }}
-                className="basic-single2"
-                classNamePrefix="basic-select2"
-              />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                width: "50%",
-                margin: "3px",
-              }}
-            >
-              <label style={{ color: "#c79d15" }}>User</label>
-              <Select
-                onChange={(selectedOption) =>
-                  handleChangeuser(selectedOption.value)
-                }
-                options={combineData}
-                defaultValue={{ label: "All", value: users }}
-                className="basic-single2"
-                classNamePrefix="basic-select2"
-              />
-            </div>
-          </div>
-          <p id="parent-modal-description" style={{ margin: "10px" }}>
-            Select Share Option
-          </p>
+          <p id="parent-modal-description">Select Share Option</p>
           <WhatsappModal
             itemId={itemId}
             handleError={handleError}
             handleSuccess={handleSuccess}
             closingfun={closingfun}
-            filterBy={filterBy}
-            userName={users}
           />
           <GmailModal
             itemId={itemId}
             handleError={handleError}
             handleSuccess={handleSuccess}
             closingfun={closingfun}
-            filterBy={filterBy}
-            userName={users}
           />
-
-          <CopyLink itemId={itemId} filterBy={filterBy} userName={users} />
           <button
-            style={{ marginLeft: "50%" }}
+            style={{ marginLeft: "30%" }}
             className="canncel-btn"
             onClick={() => handleClose()}
           >

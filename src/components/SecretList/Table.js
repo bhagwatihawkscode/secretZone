@@ -23,8 +23,14 @@ import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import ClockModal from "./ClockModal";
 import ShareIcon from "@mui/icons-material/Share";
 import ShareModal from "./ShareModal";
+import SkeltonComp from "./Skelton";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import SpeedDial from "@mui/material/SpeedDial";
+import SpeedDialIcon from "@mui/material/SpeedDialIcon";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
+import { useMediaQuery } from "@mui/material";
 
-const Table = ({ data, isFetchData }) => {
+const Table = ({ data, isFetchData, ShowOneEdit }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -36,19 +42,33 @@ const Table = ({ data, isFetchData }) => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [ClockId, setClockId] = useState(null);
   const [DeleteItemId, setDeleteItemId] = useState(null);
-  const [isFavorited, setIsFavorited] = useState(false);
+  const [editPermission, setEditPermission] = useState(null);
   const [isNestedModal, setIsNestedModal] = useState(false);
   const [isShareModal, setIsShareModal] = useState(false);
   const [shareId, setShareId] = useState();
   const [isClockModal, setIsClockModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const [lockedRows, setLockedRows] = useState({});
+  const [showMobileActions, setShowMobileActions] = useState({});
+
+  const isMobile = useMediaQuery("(max-width: 600px)");
+  const toggleMobileActions = (itemId) => {
+    setShowMobileActions((prev) => ({
+      ...prev,
+      [itemId]: !prev[itemId],
+    }));
+  };
+
+  const closeMobileActions = (itemId) => {
+    const updatedShowMobileActions = { ...showMobileActions };
+    delete updatedShowMobileActions[itemId];
+    setShowMobileActions(updatedShowMobileActions);
+  };
 
   if (!data || data.length === 0) {
     return (
       <div className="table-container">
-        <h1 style={{ color: "#ceb04f", margin: "30px" }}>No Secrects Found</h1>
+        <h1 style={{ color: "#ceb04f", margin: "30px" }}>No Secrets Found</h1>
       </div>
     );
   }
@@ -88,9 +108,10 @@ const Table = ({ data, isFetchData }) => {
     }));
   };
 
-  const openModal = (key) => {
+  const openModal = (key, permission) => {
     setIsModalOpen(true);
     setSelectedItemId(key);
+    setEditPermission(permission);
   };
 
   const closeModal = () => {
@@ -112,7 +133,7 @@ const Table = ({ data, isFetchData }) => {
 
   const onCLickkey = async (keyid) => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
 
       const data = await NormalCall(
         keyid,
@@ -129,7 +150,7 @@ const Table = ({ data, isFetchData }) => {
           [keyid]: !prevState[keyid],
         }));
       }
-      fetchData();
+      // fetchData();
     } catch (error) {
       console.error("Error:", error);
     }
@@ -197,21 +218,22 @@ const Table = ({ data, isFetchData }) => {
   return (
     <div className="table-container">
       {isLoading ? (
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <div className="loader"></div>
-        </div>
+        // <div
+        //   style={{
+        //     width: "100%",
+        //     height: "100%",
+        //     display: "flex",
+        //     justifyContent: "center",
+        //   }}
+        // >
+        //   <div className="loader"></div>
+        // </div>
+        <SkeltonComp />
       ) : (
         <table className="table" style={{ backgroundColor: "transparent" }}>
           <thead>
             <tr>
-              <th>Srecrets</th>
+              <th>Secrets</th>
               <th>Title</th>
               <th>Create At</th>
               <th>Update At</th>
@@ -256,84 +278,209 @@ const Table = ({ data, isFetchData }) => {
                       </IconButton>
                     </Tooltip>{" "}
                   </div>
-
-                  <Tooltip title="Edit" placement="bottom">
-                    <IconButton
-                      onClick={() => openModal(item._id)}
-                      style={{
-                        backgroundColor: "rgba(0,0,0,0.7)",
-                        margin: "5px",
-                      }}
-                    >
-                      <ModeEditIcon
-                        style={{ color: "#EAEAEA", width: "20px" }}
-                      />
-                    </IconButton>
-                  </Tooltip>
-
-                  <Tooltip title="Delete" placement="bottom">
-                    <IconButton
-                      onClick={() => openDelModal(item._id)}
-                      style={{
-                        backgroundColor: "rgba(0,0,0,0.7)",
-                        margin: "5px",
-                      }}
-                    >
-                      <DeleteIcon style={{ color: "#EAEAEA", width: "20px" }} />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Fav">
-                    <IconButton
-                      onClick={() => {
-                        onClickFav(item._id, item.isFavorited);
-                      }}
-                      style={{
-                        backgroundColor: "rgba(0,0,0,0.7)",
-                        margin: "5px",
-                      }}
-                    >
-                      {item.isFavorited === "true" ? (
-                        <FavoriteIcon style={{ color: "red", width: "20px" }} />
-                      ) : (
-                        <FavoriteBorderIcon
+                  {ShowOneEdit === "true" ? (
+                    // Render only the edit button when item.permission is available and not 0
+                    <Tooltip title="Edit" placement="bottom">
+                      <IconButton
+                        onClick={() => openModal(item._id, item.permission)}
+                        style={{
+                          backgroundColor: "rgba(0,0,0,0.7)",
+                          margin: "5px",
+                        }}
+                      >
+                        <ModeEditIcon
                           style={{ color: "#EAEAEA", width: "20px" }}
                         />
-                      )}
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="PassWord" placement="bottom">
-                    <IconButton
-                      onClick={() => onCLickkey(item._id)}
-                      style={{
-                        backgroundColor: "rgba(0,0,0,0.7)",
-                        margin: "5px",
-                      }}
-                    >
-                      <KeyIcon style={{ color: "#EAEAEA", width: "20px" }} />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="set Reminder" placement="bottom">
-                    <IconButton
-                      style={{
-                        backgroundColor: "rgba(0,0,0,0.7)",
-                        margin: "5px",
-                      }}
-                      onClick={() => opeClockModal(item._id)}
-                    >
-                      <AccessTimeFilledIcon
-                        style={{ color: "#EAEAEA", width: "20px" }}
-                      />
-                    </IconButton>
-                  </Tooltip>
-                  <IconButton
-                    style={{
-                      backgroundColor: "rgba(0,0,0,0.7)",
-                      margin: "5px",
-                    }}
-                    onClick={() => openShareModal(item._id)}
-                  >
-                    <ShareIcon style={{ color: "#EAEAEA", width: "20px" }} />
-                  </IconButton>
+                      </IconButton>
+                    </Tooltip>
+                  ) : (
+                    <>
+                      <div
+                        className={
+                          showMobileActions[item._id]
+                            ? "mobile-icons"
+                            : "non-mobile-icons"
+                        }
+                        style={{ position: "relative" }}
+                      >
+                        {!isMobile ? (
+                          <>
+                            <Tooltip title="Edit" placement="bottom">
+                              <IconButton
+                                onClick={() => openModal(item._id)}
+                                style={{
+                                  backgroundColor: "rgba(0,0,0,0.7)",
+                                  margin: "5px",
+                                }}
+                              >
+                                <ModeEditIcon
+                                  style={{ color: "#EAEAEA", width: "20px" }}
+                                />
+                              </IconButton>
+                            </Tooltip>
+
+                            <Tooltip title="Delete" placement="bottom">
+                              <IconButton
+                                onClick={() => openDelModal(item._id)}
+                                style={{
+                                  backgroundColor: "rgba(0,0,0,0.7)",
+                                  margin: "5px",
+                                }}
+                              >
+                                <DeleteIcon
+                                  style={{ color: "#EAEAEA", width: "20px" }}
+                                />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Fav">
+                              <IconButton
+                                onClick={() => {
+                                  onClickFav(item._id, item.isFavorited);
+                                }}
+                                style={{
+                                  backgroundColor: "rgba(0,0,0,0.7)",
+                                  margin: "5px",
+                                }}
+                              >
+                                {item.isFavorited === "true" ? (
+                                  <FavoriteIcon
+                                    style={{ color: "red", width: "20px" }}
+                                  />
+                                ) : (
+                                  <FavoriteBorderIcon
+                                    style={{ color: "#EAEAEA", width: "20px" }}
+                                  />
+                                )}
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="PassWord" placement="bottom">
+                              <IconButton
+                                onClick={() => onCLickkey(item._id)}
+                                style={{
+                                  backgroundColor: "rgba(0,0,0,0.7)",
+                                  margin: "5px",
+                                }}
+                              >
+                                <KeyIcon
+                                  style={{ color: "#EAEAEA", width: "20px" }}
+                                />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="set Reminder" placement="bottom">
+                              <IconButton
+                                style={{
+                                  backgroundColor: "rgba(0,0,0,0.7)",
+                                  margin: "5px",
+                                }}
+                                onClick={() => opeClockModal(item._id)}
+                              >
+                                <AccessTimeFilledIcon
+                                  style={{ color: "#EAEAEA", width: "20px" }}
+                                />
+                              </IconButton>
+                            </Tooltip>
+                            <IconButton
+                              style={{
+                                backgroundColor: "rgba(0,0,0,0.7)",
+                                margin: "5px",
+                              }}
+                              onClick={() => openShareModal(item._id)}
+                            >
+                              <ShareIcon
+                                style={{ color: "#EAEAEA", width: "20px" }}
+                              />
+                            </IconButton>
+                          </>
+                        ) : (
+                          <>
+                            <SpeedDial
+                              ariaLabel="Custom SpeedDial"
+                              icon={<SpeedDialIcon />}
+                              onClose={() => closeMobileActions(item._id)}
+                              onOpen={() => toggleMobileActions(item._id)}
+                              open={showMobileActions[item._id]}
+                              sx={{
+                                position: "absolute",
+                              }}
+                              direction="down"
+                              FabProps={{
+                                style: { backgroundColor: "rgba(0,0,0,0.6)" },
+                              }}
+                            >
+                              <SpeedDialAction
+                                icon={
+                                  <ModeEditIcon
+                                    style={{ color: "black", width: "40px" }}
+                                  />
+                                }
+                                tooltipTitle="Edit"
+                                onClick={() => openModal(item._id)}
+                              />
+                              <SpeedDialAction
+                                icon={
+                                  <DeleteOutlineOutlinedIcon
+                                    style={{
+                                      color: "black",
+                                      width: "40px",
+                                    }}
+                                  />
+                                }
+                                tooltipTitle="Delete"
+                                onClick={() => openDelModal(item._id)}
+                              />
+                              <SpeedDialAction
+                                icon={
+                                  item.isFavorited === "true" ? (
+                                    <FavoriteIcon
+                                      style={{ color: "red", width: "40px" }}
+                                    />
+                                  ) : (
+                                    <FavoriteBorderIcon
+                                      style={{
+                                        color: "black",
+                                        width: "40px",
+                                      }}
+                                    />
+                                  )
+                                }
+                                tooltipTitle="Fav"
+                                onClick={() => {
+                                  onClickFav(item._id, item.isFavorited);
+                                }}
+                              />
+                              <SpeedDialAction
+                                icon={
+                                  <KeyIcon
+                                    style={{ color: "black", width: "40px" }}
+                                  />
+                                }
+                                tooltipTitle="Lock"
+                                onClick={() => onCLickkey(item._id)}
+                              />
+                              <SpeedDialAction
+                                icon={
+                                  <AccessTimeFilledIcon
+                                    style={{ color: "black", width: "40px" }}
+                                  />
+                                }
+                                tooltipTitle="Reminder"
+                                onClick={() => opeClockModal(item._id)}
+                              />
+                              <SpeedDialAction
+                                icon={
+                                  <ShareIcon
+                                    style={{ color: "black", width: "40px" }}
+                                  />
+                                }
+                                tooltipTitle="Share"
+                                onClick={() => openShareModal(item._id)}
+                              />
+                            </SpeedDial>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
@@ -347,6 +494,7 @@ const Table = ({ data, isFetchData }) => {
         handleSuccess={handleSuccess}
         handleError={handleError}
         isFetch={fetchData}
+        permission={editPermission}
       />
       <DeleteModal
         open={isDeleteOpen}

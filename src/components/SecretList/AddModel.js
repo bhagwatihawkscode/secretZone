@@ -7,6 +7,7 @@ import RichTextEditor from "./TextComp";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { _Api } from "../../Api";
+import AddressAutocomplete from "./AutoCompleteInput";
 
 import { useState } from "react";
 
@@ -16,7 +17,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "40%",
-  height: "85%",
+  height: "90%",
   bgcolor: "rgba(0,0,0,0.7)",
   border: "2px solid #000",
   boxShadow: 24,
@@ -26,9 +27,6 @@ const mobileStyle = {
   "@media (max-width: 767px)": {
     width: "100%",
     height: "100%",
-
-    top: "80%",
-    left: "80%",
   },
 };
 const mergedStyle = { ...style, ...mobileStyle };
@@ -41,9 +39,11 @@ const TransitionsModal = ({
 }) => {
   const [title, setTitle] = useState("");
   const [richTextContent, setRichTextContent] = useState("");
+  const [address, setAddress] = useState("");
   const [errors, setErrors] = useState({
     title: false,
     richTextContent: false,
+    address: false,
   });
 
   const handleChange = (e) => {
@@ -55,18 +55,27 @@ const TransitionsModal = ({
     setRichTextContent(value);
     setErrors({ ...errors, richTextContent: false });
   };
+  const handleSelect = (data) => {
+    console.log("Selected option:");
+    setAddress(
+      data.properties.address_line1 + " " + data.properties.address_line2
+    );
+    setErrors({ ...errors, address: false });
+  };
 
   const handleAddClick = async () => {
     const Data = new FormData();
-    if (title === "" || richTextContent === "") {
+    if (title === "" || richTextContent === "" || address === "") {
       setErrors({
         title: title === "",
         richTextContent: richTextContent === "",
+        address: address === "",
       });
     } else {
       Data.append("Title", title);
       Data.append("Content", richTextContent);
       Data.append("userID", "");
+      Data.append("Location", address);
       try {
         const response = await _Api(
           Data,
@@ -77,6 +86,7 @@ const TransitionsModal = ({
         if (success === true) {
           setTitle("");
           setRichTextContent("");
+          setAddress("");
           handleSuccess(message);
           handleClose();
         } else {
@@ -105,7 +115,7 @@ const TransitionsModal = ({
         }}
       >
         <Fade in={open}>
-          <Box sx={mergedStyle}>
+          <Box sx={mergedStyle} className="modal-mobile">
             <IconButton
               className="back-btn"
               style={{
@@ -129,6 +139,14 @@ const TransitionsModal = ({
                 onChange={handleChange}
               />
               <br />
+              <h3 style={{ color: "#ceb04f" }}>Location</h3>
+              <AddressAutocomplete
+                placeholder="Enter Location Here"
+                onSelect={handleSelect}
+                customclassName={
+                  errors.address ? "Notmodel-input" : "model-input"
+                }
+              />
               <h3 style={{ color: "#ceb04f" }}>Secrets</h3>
               <RichTextEditor
                 customclassName={
@@ -149,7 +167,7 @@ const TransitionsModal = ({
                   Add
                 </button>
                 <button className="canncel-btn" onClick={() => handleClose()}>
-                  Cancel
+                  CANCEL
                 </button>
               </div>
             </div>

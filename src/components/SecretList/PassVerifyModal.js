@@ -74,7 +74,7 @@ const PassVerifyModal = ({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={mergedStyle}>
+        <Box sx={mergedStyle} className="modal-mobile">
           <div className="box-1">
             <h2 style={{ margin: " 10px", color: "#c79d15" }}>PassWord</h2>
             <div className="underline-title"></div>
@@ -92,7 +92,7 @@ const PassVerifyModal = ({
                 Unlock
               </button>
               <button className="canncel-btn" onClick={() => handleClose()}>
-                canncel
+                CANCEL
               </button>
             </div>
           </div>

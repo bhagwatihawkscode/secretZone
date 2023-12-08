@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
-import "./Secret.css";
+import "../SecretList/Secret.css";
 import { NormalCall } from "../../Api";
 
 const style = {
@@ -11,7 +11,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "40%",
+  width: "30%",
   bgcolor: "rgba(0,0,0,0.7",
   border: "2px solid #000",
   boxShadow: 24,
@@ -25,7 +25,7 @@ const mobileStyle = {
 };
 const mergedStyle = { ...style, ...mobileStyle };
 
-const PassModal = ({
+const FilePassModal = ({
   open,
   handleClose,
   isFetch,
@@ -50,7 +50,7 @@ const PassModal = ({
     } else {
       const data = await NormalCall(
         userdata,
-        " http://127.0.0.1:4000/api/todo/GeneratePass"
+        " http://127.0.0.1:4000/api/todo/generatepassword"
       );
       const { statusCode, message } = data;
 
@@ -63,7 +63,6 @@ const PassModal = ({
         handleError(message);
       }
     }
-    isFetch();
   };
 
   return (
@@ -103,4 +102,4 @@ const PassModal = ({
     </div>
   );
 };
-export default PassModal;
+export default FilePassModal;

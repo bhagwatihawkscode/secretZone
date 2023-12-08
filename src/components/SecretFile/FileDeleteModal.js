@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
 import { _Api } from "../../Api";
-
+import "../SecretList/Secret.css";
 const style = {
   position: "absolute",
   top: "50%",
@@ -26,7 +26,7 @@ const mobileStyle = {
 };
 const mergedStyle = { ...style, ...mobileStyle };
 
-const DeleteModal = ({
+const FileDeleteModal = ({
   open,
   handleClose,
   itemId,
@@ -39,7 +39,7 @@ const DeleteModal = ({
     Datakey.append("key", itemId);
     const response = await _Api(
       Datakey,
-      "http://127.0.0.1:4000/api/todo/DeleteUser"
+      "http://127.0.0.1:4000/api/todo/deleteuserfiles"
     );
     const { success, message } = response;
     if (success === true) {
@@ -66,7 +66,7 @@ const DeleteModal = ({
             component="h2"
             style={{ color: "#ceb04f" }}
           >
-            You want to Delete Secret
+            You want to Delete Secret Files
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             <div
@@ -86,4 +86,4 @@ const DeleteModal = ({
     </div>
   );
 };
-export default DeleteModal;
+export default FileDeleteModal;

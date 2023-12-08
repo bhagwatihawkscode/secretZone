@@ -1,8 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-
-import "./Secret.css";
+import "../SecretList/Secret.css";
 import { NormalCall } from "../../Api";
 
 const style = {
@@ -49,7 +48,7 @@ function ChildModal({ itemId, handleError, handleSuccess, closingfun }) {
     } else {
       const data = await NormalCall(
         setdata,
-        " http://127.0.0.1:4000/api/todo/PermanentUnlock"
+        " http://127.0.0.1:4000/api/todo/removeLock"
       );
       const { statusCode, message } = data;
       if (statusCode === 201) {
@@ -106,7 +105,7 @@ function ChildModal({ itemId, handleError, handleSuccess, closingfun }) {
   );
 }
 
-export default function NestedModal({
+export default function FileNestedModal({
   open,
   handleClose,
   itemId,

@@ -8,7 +8,9 @@ import Secretlist from "./components/SecretList/Secretlist";
 import ProfileCard from "./components/Dashbored/ProfileCard";
 import Dashcontent from "./components/Dashbored/Dashcontent";
 import FavList from "./components/favlist/FavList";
-import YourComponent from "./components/imagestaking/imagetakeform";
+import SecretFile from "./components/SecretFile/Secretfile";
+import ForgetPass from "./components/Login/ForgetPass";
+import ResetPassword from "./components/Login/RestPassWord";
 
 function App() {
   return (
@@ -18,9 +20,10 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/image" element={<YourComponent />}></Route>
+        <Route path="/Forgetpass" element={<ForgetPass />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route
-          path="/DashBored"
+          path="/DashBoard"
           element={
             <Dashboard>
               <Dashcontent />
@@ -51,7 +54,14 @@ function App() {
             </Dashboard>
           }
         />
-
+        <Route
+          path="/SecretFile"
+          element={
+            <Dashboard>
+              <SecretFile />
+            </Dashboard>
+          }
+        />
         {/* //  <Route path='/Profile' element={}/>
         // <Route path='/Secretlist' element={}/> */}
       </Routes>

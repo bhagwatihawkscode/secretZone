@@ -1,19 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import "../Login/Auth.css";
-import loginimg from "../../assests/log-in.png";
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { validation } from "./validation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
-const LoginPage = () => {
+const ResetPassword = () => {
+  const { token } = useParams();
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState({});
   const [formErrors, setFormErrors] = useState({});
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
@@ -46,24 +44,25 @@ const LoginPage = () => {
     setFormErrors(errors);
     if (Object.keys(errors).length === 0) {
       try {
-        const response = await fetch("http://localhost:4000/api/todo/login", {
-          method: "POST",
-          body: JSON.stringify(formValues),
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-
+        const response = await fetch(
+          `http://localhost:4000/api/todo/reset-password/${token}`,
+          {
+            method: "POST",
+            body: JSON.stringify(formValues),
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
         if (response.ok) {
           const responseData = await response.json();
-          const { success, message, token } = responseData;
-
+          const { success, message } = responseData;
           if (success) {
             handleSuccess(message);
-            localStorage.setItem("token", token);
+
             setTimeout(() => {
-              navigate("/DashBoard");
+              navigate("/login");
             }, 2000);
           } else {
             handleError(message);
@@ -80,12 +79,15 @@ const LoginPage = () => {
     }
   };
   const backload = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   return (
     <div className="main">
-      <div className="form-container">
+      <div
+        className="form-container"
+        style={{ padding: "20px", justifyContent: "center" }}
+      >
         <IconButton
           className="back-btn"
           style={{
@@ -98,19 +100,14 @@ const LoginPage = () => {
         >
           <ArrowBackIcon />
         </IconButton>
-        <form className="form" onSubmit={handleSubmit}>
-          <h1>Login</h1>
-          <p className="setthis">Lets Enter in Secret Zone</p>
+        <form
+          className="form"
+          style={{ width: "100%" }}
+          onSubmit={handleSubmit}
+        >
+          <h1>Create Password</h1>
+          <p className="setthis">Enter New password.</p>
 
-          <label for="email">Email</label>
-          <input
-            type="email"
-            className={formErrors.email ? "input-error" : "form-input"}
-            name="email"
-            value={formValues.email}
-            onChange={handleChange}
-            placeholder="Xyz@gmail.com"
-          />
           <label for="password">Password</label>
           <input
             type="password"
@@ -120,30 +117,26 @@ const LoginPage = () => {
             value={formValues.password}
             onChange={handleChange}
           />
+          <label for="password">Confirm Password</label>
+          <input
+            type="password"
+            className={
+              formErrors.Confirmpassword ? "input-error" : "form-input"
+            }
+            name="Confirm password"
+            placeholder="Enter your password"
+            value={formValues.COnfirmpassword}
+            onChange={handleChange}
+          />
 
-          <button type="submit">LogIn</button>
-
-          <Link to="/signup" className="setthis">
-            Not Have an Account?Create
-          </Link>
-          <Link
-            to="/Forgetpass"
-            className="forgetpass"
-            style={{ textAlign: "center" }}
-          >
-            <p style={{ fontSize: "0.7rem", color: "blue" }}>Forget Password</p>
-          </Link>
+          <button type="submit">Submit</button>
 
           {/* <Link>Already have an account? <span href="#">Sign in</span></Link> */}
         </form>
-
-        <div className="image-container">
-          <img src={loginimg} alt="signuppage" />
-        </div>
       </div>
       <ToastContainer />
     </div>
   );
 };
 
-export default LoginPage;
+export default ResetPassword;

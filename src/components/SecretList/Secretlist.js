@@ -11,20 +11,26 @@ import DatePicker from "react-multi-date-picker";
 import Toolbar from "react-multi-date-picker/plugins/toolbar";
 import EditModal from "./EditModal";
 import Select from "react-select";
+import SkeltonComp from "./Skelton";
+import { useNavigate } from "react-router-dom";
 
 const Secretlist = () => {
-  const { state } = useLocation();
+  const { state, search } = useLocation();
+
+  const secretId = search.replace(/^(\?)/, "");
+
   const [TableData, setTableData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalClosedCount, setModalClosedCount] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [filterBy, setFilterBy] = useState("Select");
   const [Dates, setDate] = useState([]);
+  const [OneEdit, ShowOneEdit] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
+  const navigate = useNavigate();
   // console.log(Dates[0].toString());
   const optionsdata = [
     { value: "Select", label: "Select" },
@@ -83,7 +89,31 @@ const Secretlist = () => {
 
     const fetchDataAndCheckEditModal = async () => {
       try {
-        await fetchData();
+        if (search) {
+          const response = await NormalCall(
+            "",
+            `http://127.0.0.1:4000/api/todo/sendrowdata/${secretId}`
+          );
+          const isAuthorized =
+            response.secret.accessuser === "" ||
+            localStorage.getItem("token") === response.secret.accessuser;
+
+          if (isAuthorized) {
+            setTableData([response.secret]);
+            ShowOneEdit(response.showEdit);
+          } else {
+            handleError("You are not authorized for this action!");
+
+            // Display the error message for 1 second
+            setTimeout(() => {
+              navigate("/Secretlist");
+            }, 3000);
+          }
+        } else {
+          ShowOneEdit(false);
+          await fetchData();
+        }
+
         setIsLoading(false);
 
         if (state?.rowId) {
@@ -101,7 +131,15 @@ const Secretlist = () => {
     };
 
     fetchDataAndCheckEditModal();
-  }, [modalClosedCount, Dates, isSearching, searchText, filterBy, state]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    modalClosedCount,
+    Dates.length === 2,
+    isSearching,
+    filterBy,
+    state,
+    search,
+  ]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -116,7 +154,14 @@ const Secretlist = () => {
   };
 
   const handleSearch = () => {
-    setIsSearching(true, fetchData());
+    // setIsSearching((prevSearch) => !prevSearch);
+    setIsSearching(true);
+    // If searching is active, call fetchData
+    if (isSearching) {
+      fetchData();
+    } else if (searchText === "") {
+      setIsSearching(false);
+    }
   };
 
   const handleFilterChange = (selectedFilter) => {
@@ -142,7 +187,7 @@ const Secretlist = () => {
         </header>
         <div className="tables-container">
           <div className="search-div">
-            <div>
+            <div className="media-div">
               <input
                 className="input-tag"
                 type="text"
@@ -150,13 +195,15 @@ const Secretlist = () => {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 onKeyDown={(e) => {
+                  // Check if Enter key is pressed
                   if (e.key === "Enter") {
                     handleSearch();
                   }
                 }}
               />
             </div>
-            <div>
+
+            <div className="inner-serachdiv">
               {/* <select
                 className="select-btn"
                 value={filterBy}
@@ -181,18 +228,18 @@ const Secretlist = () => {
                 className="basic-single"
                 classNamePrefix="basic-select"
               />
-
               <DatePicker
                 value={Dates}
-                onChange={setDate}
+                onChange={(value) => setDate(value)}
                 range
                 numberOfMonths={2}
+                className="dateset-con"
                 placeholder="Select Date"
                 plugins={[
                   <Toolbar
                     position="bottom"
                     names={{
-                      today: "todat Date",
+                      today: "today Date",
                       deselect: "select none",
                       close: "close",
                     }}
@@ -202,19 +249,24 @@ const Secretlist = () => {
             </div>
           </div>
           {isLoading ? (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <div className="loader"></div>
-            </div>
+            // <div
+            //   style={{
+            //     width: "100%",
+            //     height: "100%",
+            //     display: "flex",
+            //     justifyContent: "center",
+            //     alignItems: "center",
+            //   }}
+            // >
+            //   <div className="loader"></div>
+            // </div>
+            <SkeltonComp />
           ) : (
-            <Table data={TableData} isFetchData={fetchData} />
+            <Table
+              data={TableData}
+              isFetchData={fetchData}
+              ShowOneEdit={OneEdit}
+            />
           )}
         </div>
       </div>

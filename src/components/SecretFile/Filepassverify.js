@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
-import "./Secret.css";
+import "../SecretList/Secret.css";
 import { NormalCall } from "../../Api";
 
 const style = {
@@ -11,7 +11,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "40%",
+  width: "30%",
   bgcolor: "rgba(0,0,0,0.7",
   border: "2px solid #000",
   boxShadow: 24,
@@ -25,45 +25,45 @@ const mobileStyle = {
 };
 const mergedStyle = { ...style, ...mobileStyle };
 
-const PassModal = ({
+const FilePassVerifyModal = ({
   open,
   handleClose,
-  isFetch,
-  handleKey,
   itemId,
+  unlockRowCallback,
   handleError,
   handleSuccess,
 }) => {
-  const [errors, seterrors] = useState(false);
   const [password, setpassword] = useState("");
+  const [errors, seterrors] = useState(false);
   const hnadlechange = (e) => {
     setpassword(e.target.value);
     seterrors(false);
   };
-  const userdata = {
-    password: password,
-    keyid: itemId,
-  };
-  const genratePass = async () => {
+
+  const handleUnlock = async () => {
     if (password === "") {
       seterrors(true);
     } else {
+      const userdata = {
+        password: password,
+        keyid: itemId,
+      };
       const data = await NormalCall(
         userdata,
-        " http://127.0.0.1:4000/api/todo/GeneratePass"
+        "http://127.0.0.1:4000/api/todo/passwordverification"
       );
-      const { statusCode, message } = data;
-
-      if (statusCode === 201) {
-        setpassword("");
+      const { success, message } = data;
+      if (success === true) {
+        unlockRowCallback(itemId);
         handleSuccess(message);
-        isFetch();
+        setpassword("");
         handleClose();
       } else {
+        handleClose();
+        setpassword("");
         handleError(message);
       }
     }
-    isFetch();
   };
 
   return (
@@ -76,22 +76,20 @@ const PassModal = ({
       >
         <Box sx={mergedStyle} className="modal-mobile">
           <div className="box-1">
-            <h2 style={{ margin: " 10px", color: "#c79d15" }}>
-              PassWord Generate
-            </h2>
+            <h2 style={{ margin: " 10px", color: "#c79d15" }}>PassWord</h2>
             <div className="underline-title"></div>
 
             <input
               placeholder="PassWord"
+              type="password"
               value={password}
               onChange={(e) => hnadlechange(e)}
               className={errors ? "errors-input" : "input3-tag"}
-              type="password"
             />
             {/* <input placeholder="Confirm PassWord" className="input3-tag" /> */}
             <div className="btn-div">
-              <button className="add1-btn" onClick={() => genratePass()}>
-                Generate
+              <button className="add1-btn" onClick={() => handleUnlock()}>
+                Unlock
               </button>
               <button className="canncel-btn" onClick={() => handleClose()}>
                 CANCEL
@@ -103,4 +101,4 @@ const PassModal = ({
     </div>
   );
 };
-export default PassModal;
+export default FilePassVerifyModal;
