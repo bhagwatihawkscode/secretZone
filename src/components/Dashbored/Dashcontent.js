@@ -112,6 +112,7 @@ const Dashcontent = () => {
             onChange={handleSearchChange}
             onKeyDown={handleSearchKeyPress}
             label="Search"
+            className="dash-boredinput"
           />
           {anchorEl && (
             <div

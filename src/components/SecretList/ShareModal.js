@@ -46,7 +46,7 @@ function CopyLink({
       };
       const data = await NormalCall(
         dataobj,
-      `${process.env.REACT_APP_Base_Url}/generatelink`
+        `${process.env.REACT_APP_Base_Url}/generatelink`
       );
 
       // Set the generated link in the state
@@ -68,7 +68,7 @@ function CopyLink({
   return (
     <React.Fragment>
       <IconButton onClick={handleCopyLink}>
-        <ContentCopyIcon />
+        <ContentCopyIcon style={{ color: "#c79d15" }} />
       </IconButton>
       {copied ? <span style={{ color: "#c79d15" }}>Link copied </span> : null}
     </React.Fragment>
@@ -102,7 +102,7 @@ function WhatsappModal({
     };
     const response = await NormalCall(
       dataobj,
-     `${process.env.REACT_APP_Base_Url}/whatsappsend`
+      `${process.env.REACT_APP_Base_Url}/whatsappsend`
     );
     const { whatsappUrl, statusCode, message } = response;
 
