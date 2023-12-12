@@ -9,7 +9,6 @@ import TopicIcon from "@mui/icons-material/Topic";
 import ShareLocationIcon from "@mui/icons-material/ShareLocation";
 import TodayIcon from "@mui/icons-material/Today";
 
-import TextField from "@mui/material/TextField";
 import { _Api } from "../../Api";
 const Dashcontent = () => {
   const [todaycount, settodaycount] = useState();
@@ -105,13 +104,13 @@ const Dashcontent = () => {
           style={{ position: "relative", width: "25%" }}
           className="dash-bar"
         >
-          <TextField
+          <input
             aria-describedby={id}
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
             onKeyDown={handleSearchKeyPress}
-            label="Search"
+            placeholder="Search"
             className="dash-boredinput"
           />
           {anchorEl && (

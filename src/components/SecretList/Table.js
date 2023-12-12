@@ -60,8 +60,11 @@ const Table = ({ data, isFetchData, ShowOneEdit }) => {
   };
 
   const closeMobileActions = (itemId) => {
+    // Create a new object without the specified item
     const updatedShowMobileActions = { ...showMobileActions };
     delete updatedShowMobileActions[itemId];
+
+    // Update state with the new object
     setShowMobileActions(updatedShowMobileActions);
   };
 
@@ -393,15 +396,14 @@ const Table = ({ data, isFetchData, ShowOneEdit }) => {
                           </>
                         ) : (
                           <>
+
                             <SpeedDial
-                              ariaLabel="Custom SpeedDial"
+                              ariaLabel="SpeedDial controlled open example"
                               icon={<SpeedDialIcon />}
                               onClose={() => closeMobileActions(item._id)}
                               onOpen={() => toggleMobileActions(item._id)}
                               open={showMobileActions[item._id]}
-                              sx={{
-                                position: "absolute",
-                              }}
+                             
                               direction="down"
                               FabProps={{
                                 style: { backgroundColor: "rgba(0,0,0,0.6)" },

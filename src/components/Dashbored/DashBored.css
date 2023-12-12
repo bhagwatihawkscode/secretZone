@@ -492,9 +492,9 @@ background: #e0e0e0;
 
     }
       .slidebar-container{
-        width: 30%;
+        width: 50%;
         position: absolute;
-        z-index: 1;
+        z-index: 9999;
       }
   }
   
