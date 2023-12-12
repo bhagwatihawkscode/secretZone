@@ -491,6 +491,11 @@ background: #e0e0e0;
       flex-direction: column !important;
 
     }
+      .slidebar-container{
+        width: 30%;
+        position: absolute;
+        z-index: 1;
+      }
   }
   
   

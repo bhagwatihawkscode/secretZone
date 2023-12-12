@@ -39,7 +39,7 @@ const DeleteModal = ({
     Datakey.append("key", itemId);
     const response = await _Api(
       Datakey,
-      "http://127.0.0.1:4000/api/todo/DeleteUser"
+      `${process.env.REACT_APP_Base_Url}/DeleteUser`
     );
     const { success, message } = response;
     if (success === true) {

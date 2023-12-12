@@ -62,7 +62,7 @@ const NotificationModal = ({ open, handleClose, notification }) => {
                       handleClose();
                     }}
                   >
-                    <div class="notification">
+                    <div className="notification">
                       <div className="notiglow"></div>
                       <div className="notiborderglow"></div>
                       <div className="notititle">{item.title}</div>

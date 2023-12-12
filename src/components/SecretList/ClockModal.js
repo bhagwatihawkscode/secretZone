@@ -48,7 +48,7 @@ const ClockModal = ({
       try {
         const result = await NormalCall(
           clockid,
-          "http://127.0.0.1:4000/api/todo/clockmodaldatasend"
+          `${process.env.REACT_APP_Base_Url}/clockmodaldatasend`
         );
 
         if (result && result.time) {
@@ -88,7 +88,7 @@ const ClockModal = ({
 
       const data = await NormalCall(
         datasets,
-        "http://127.0.0.1:4000/api/todo/setReminder"
+        `${process.env.REACT_APP_Base_Url}/setReminder`
       );
 
       const { success, message } = data;

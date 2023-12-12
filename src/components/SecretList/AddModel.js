@@ -56,7 +56,6 @@ const TransitionsModal = ({
     setErrors({ ...errors, richTextContent: false });
   };
   const handleSelect = (data) => {
-    console.log("Selected option:");
     setAddress(
       data.properties.address_line1 + " " + data.properties.address_line2
     );
@@ -79,7 +78,7 @@ const TransitionsModal = ({
       try {
         const response = await _Api(
           Data,
-          "http://127.0.0.1:4000/api/todo/TodoData"
+          `${process.env.REACT_APP_Base_Url}/TodoData`
         );
         const { success, message } = response;
 

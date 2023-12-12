@@ -5,8 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../Login/Auth.css";
-import { IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+
 import "../SecretList/Secret.css";
 import { validation } from "../Login/validation";
 import { _Api } from "../../Api";
@@ -16,7 +15,7 @@ const ProfileCard = () => {
   const [images, setImages] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
-  const [image, setImage] = useState();
+
   const navigate = useNavigate();
 
   const [formErrors, setFormErrors] = useState({});
@@ -25,14 +24,17 @@ const ProfileCard = () => {
       navigate("/login");
     }
     try {
-      const response = await fetch("http://127.0.0.1:4000/api/todo/DataSend", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: localStorage.getItem("token"),
-        },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_Base_Url}/DataSend`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: localStorage.getItem("token"),
+          },
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         const responseData = await response.json();
@@ -53,6 +55,7 @@ const ProfileCard = () => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   const handleChange = (e) => {
@@ -118,7 +121,7 @@ const ProfileCard = () => {
       setIsLoading(true);
       const response = await _Api(
         testData,
-        "http://127.0.0.1:4000/api/todo/update"
+        `${process.env.REACT_APP_Base_Url}/update`
       );
       const { success, message } = response;
 
@@ -218,7 +221,7 @@ const ProfileCard = () => {
           <h1 className="setthis1" style={{ margin: "" }}>
             User Profile
           </h1>
-          <label for="name">Name</label>
+          <label htmlFor="name">Name</label>
           <input
             type="text"
             className={formErrors.name ? "input-error" : "form1-input"}
@@ -228,7 +231,7 @@ const ProfileCard = () => {
             onChange={handleChange}
           />
 
-          <label for="email">Email</label>
+          <label htmlFor="email">Email</label>
           <input
             type="email"
             className={formErrors.email ? "input-error" : "form1-input"}
@@ -238,7 +241,7 @@ const ProfileCard = () => {
             onChange={handleChange}
           />
 
-          <label for="Address">Address</label>
+          <label htmlFor="Address">Address</label>
           <textarea
             type="Address"
             className={formErrors.Address ? "input-error" : "form1-input"}

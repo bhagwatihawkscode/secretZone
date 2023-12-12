@@ -51,7 +51,7 @@ const Dashboard = ({ children }) => {
   const fetchNotifications = async () => {
     const test = await NormalCall(
       "",
-      "http://127.0.0.1:4000/api/todo/ShowNotification"
+      `${process.env.REACT_APP_Base_Url}/ShowNotification`
     );
     if (Array.isArray(test)) {
       setnotification(test);
@@ -70,7 +70,7 @@ const Dashboard = ({ children }) => {
     setAnchorEl(null);
   };
   const ClearNotification = async () => {
-    await NormalCall("", "http://127.0.0.1:4000/api/todo/ClearNotification");
+    await NormalCall("", `${process.env.REACT_APP_Base_Url}/ClearNotification`);
 
     handleClose();
   };
@@ -82,7 +82,7 @@ const Dashboard = ({ children }) => {
       } else {
         let res = await NormalCall(
           "",
-          "http://127.0.0.1:4000/api/todo/CheckDays"
+          `${process.env.REACT_APP_Base_Url}/CheckDays`
         );
         if (res) {
           // Check if the notification modal has been shown
@@ -103,7 +103,7 @@ const Dashboard = ({ children }) => {
       }
     }
     login();
-  }, []);
+  });
   useEffect(() => {
     async function fetchData() {
       if (isLoggedIn) {
@@ -115,7 +115,7 @@ const Dashboard = ({ children }) => {
             setuserprofile(storedProfileImage);
           } else {
             const response = await fetch(
-              "http://127.0.0.1:4000/api/todo/DataSend",
+              `${process.env.REACT_APP_Base_Url}/DataSend`,
               {
                 method: "POST",
                 headers: {
@@ -223,7 +223,7 @@ const Dashboard = ({ children }) => {
                 <div
                   className="Scrollhide"
                   style={{
-                    height: "400px",
+                    maxHeight: "350px",
                     overflowY: "scroll",
                   }}
                 >
@@ -270,7 +270,7 @@ const Dashboard = ({ children }) => {
                             handleClose();
                           }}
                         >
-                          <div class="notification">
+                          <div className="notification">
                             <div className="notiglow"></div>
                             <div className="notiborderglow"></div>
                             <div className="notititle">{item.title}</div>

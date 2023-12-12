@@ -50,7 +50,7 @@ const Secretlist = () => {
 
   const fetchData = async () => {
     try {
-      let apiURL = "http://127.0.0.1:4000/api/todo/SearchFilter";
+      let apiURL = `${process.env.REACT_APP_Base_Url}/SearchFilter`;
       const dataset = new FormData();
 
       if (isSearching) {
@@ -83,7 +83,7 @@ const Secretlist = () => {
       console.error("Error fetching data:", error);
     }
   };
-
+  const checkd = Dates.length === 2;
   useEffect(() => {
     setIsLoading(true);
 
@@ -92,7 +92,7 @@ const Secretlist = () => {
         if (search) {
           const response = await NormalCall(
             "",
-            `http://127.0.0.1:4000/api/todo/sendrowdata/${secretId}`
+            `${process.env.REACT_APP_Base_Url}/sendrowdata/${secretId}`
           );
           const isAuthorized =
             response.secret.accessuser === "" ||
@@ -119,7 +119,7 @@ const Secretlist = () => {
         if (state?.rowId) {
           const check = await NormalCall(
             state?.rowId,
-            "http://127.0.0.1:4000/api/todo/openEditModal"
+            `${process.env.REACT_APP_Base_Url}/openEditModal`
           );
 
           setIsEditModalOpen(check);
@@ -132,14 +132,7 @@ const Secretlist = () => {
 
     fetchDataAndCheckEditModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    modalClosedCount,
-    Dates.length === 2,
-    isSearching,
-    filterBy,
-    state,
-    search,
-  ]);
+  }, [modalClosedCount, checkd, isSearching, filterBy, state, search]);
 
   const openModal = () => {
     setIsModalOpen(true);

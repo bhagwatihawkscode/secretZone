@@ -49,9 +49,9 @@ function ChildModal({ permission, rowid, handleClose1 }) {
 
       const data = await NormalCall(
         "",
-        ` http://127.0.0.1:4000/api/todo/generatelink/${rowid}/${permission}`
+        `${process.env.REACT_APP_Base_Url}/generatelink/${rowid}/${permission}`
       );
-      console.log(data);
+
       const generateLinkData = data;
       const uniqueLink = generateLinkData.link;
       // Display the generated link to the user

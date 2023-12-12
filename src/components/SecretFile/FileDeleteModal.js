@@ -39,7 +39,7 @@ const FileDeleteModal = ({
     Datakey.append("key", itemId);
     const response = await _Api(
       Datakey,
-      "http://127.0.0.1:4000/api/todo/deleteuserfiles"
+      `${process.env.REACT_APP_Base_Url}/deleteuserfiles`
     );
     const { success, message } = response;
     if (success === true) {

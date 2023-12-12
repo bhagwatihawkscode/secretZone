@@ -137,7 +137,7 @@ const Table = ({ data, isFetchData, ShowOneEdit }) => {
 
       const data = await NormalCall(
         keyid,
-        "http://127.0.0.1:4000/api/todo/checkPassGen"
+        `${process.env.REACT_APP_Base_Url}/checkPassGen`
       );
 
       if (data === true) {
@@ -172,7 +172,7 @@ const Table = ({ data, isFetchData, ShowOneEdit }) => {
 
     const response = await _Api(
       data,
-      "http://127.0.0.1:4000/api/todo/favUpdat"
+      `${process.env.REACT_APP_Base_Url}/favUpdat`
     );
     const { success } = response;
     if (success) {

@@ -38,7 +38,7 @@ const Dashcontent = () => {
     if (event.key === "Enter") {
       setAnchorEl(true);
       // Update search history here if needed
-      let apiURL = "http://127.0.0.1:4000/api/todo/LocationFilter";
+      let apiURL = `${process.env.REACT_APP_Base_Url}/LocationFilter`;
       const dataset = new FormData();
       dataset.append("query", searchValue);
       const response = await _Api(dataset, apiURL);
@@ -50,38 +50,42 @@ const Dashcontent = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "search-popper" : undefined;
-  const fetchData = async () => {
-    if (isLoggedIn) {
-      try {
-        const data1 = await NormalCall(
-          "",
-          "http://127.0.0.1:4000/api/todo/DashboardApi"
-        );
-        const week = await NormalCall(
-          "",
-          "http://127.0.0.1:4000/api/todo/weekdayscount"
-        );
-
-        const { todayCount, totalCount, totalFileCount, uniqueLocationsCount } =
-          data1;
-        settodaycount(todayCount);
-        setTotalCount(totalCount);
-        setTotalFileCount(totalFileCount);
-        setLocationcount(uniqueLocationsCount);
-        setdataCount(week.data);
-        setdataFileCount(week.FileData);
-        setIsLoading(false); // Set loading to false when data is fetched
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(false); // Set loading to false in case of an error
-      }
-    } else {
-      setIsLoggedIn("");
-      setIsLoading(false); // Set loading to false if not logged in
-    }
-  };
 
   useEffect(() => {
+    const fetchData = async () => {
+      if (isLoggedIn) {
+        try {
+          const data1 = await NormalCall(
+            "",
+            `${process.env.REACT_APP_Base_Url}/DashboardApi`
+          );
+          const week = await NormalCall(
+            "",
+            `${process.env.REACT_APP_Base_Url}/weekdayscount`
+          );
+
+          const {
+            todayCount,
+            totalCount,
+            totalFileCount,
+            uniqueLocationsCount,
+          } = data1;
+          settodaycount(todayCount);
+          setTotalCount(totalCount);
+          setTotalFileCount(totalFileCount);
+          setLocationcount(uniqueLocationsCount);
+          setdataCount(week.data);
+          setdataFileCount(week.FileData);
+          setIsLoading(false); // Set loading to false when data is fetched
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          setIsLoading(false); // Set loading to false in case of an error
+        }
+      } else {
+        setIsLoggedIn("");
+        setIsLoading(false); // Set loading to false if not logged in
+      }
+    };
     fetchData();
   }, [todaycount, TotalCount, isLoggedIn, TotalFileCount, Locationcount]);
 

@@ -33,7 +33,7 @@ const MAX_COUNT = 3;
 const FileAddModal = ({ open, handleClose, handleError, handleSuccess }) => {
   const [title, setTitle] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [fileLimit, setFileLimit] = useState(false);
+
   const [isTitleEmpty, setIsTitleEmpty] = useState(false);
   const [isDropzoneEmpty, setIsDropzoneEmpty] = useState(false);
 
@@ -63,11 +63,9 @@ const FileAddModal = ({ open, handleClose, handleError, handleSuccess }) => {
           uploaded.push(fileInfo);
           setIsDropzoneEmpty(false);
 
-          if (uploaded.length === MAX_COUNT) setFileLimit(true);
-
           if (uploaded.length > MAX_COUNT) {
             handleError(`You can only add a maximum of ${MAX_COUNT} files`);
-            setFileLimit(false);
+
             limitExceeded = true;
           }
         }
@@ -100,7 +98,7 @@ const FileAddModal = ({ open, handleClose, handleError, handleSuccess }) => {
   const handleDeselectAll = () => {
     setUploadedFiles([]);
     setTitle("");
-    setFileLimit(false);
+
     handleClose();
   };
 
@@ -108,7 +106,6 @@ const FileAddModal = ({ open, handleClose, handleError, handleSuccess }) => {
     const updatedFiles = [...uploadedFiles];
     updatedFiles.splice(index, 1);
     setUploadedFiles(updatedFiles);
-    setFileLimit(false);
   };
 
   const handleSaveClick = async () => {
@@ -127,7 +124,7 @@ const FileAddModal = ({ open, handleClose, handleError, handleSuccess }) => {
 
       const response = await _Api(
         formData,
-        "http://127.0.0.1:4000/api/todo/FileData"
+        `${process.env.REACT_APP_Base_Url}/FileData`
       );
       if (response) {
         const { message } = response;

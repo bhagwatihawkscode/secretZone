@@ -15,7 +15,7 @@ const FavSecretlist = () => {
 
   const fetchData = async () => {
     try {
-      let apiURL = "http://127.0.0.1:4000/api/todo/FavSearchFilter";
+      let apiURL = `${process.env.REACT_APP_Base_Url}/FavSearchFilter`;
       const dataset = new FormData();
 
       if (isSearching) {
@@ -44,6 +44,7 @@ const FavSecretlist = () => {
         setIsLoading(false);
       }, 1000);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSearching, Dates.length === 2]);
   const handleSearch = () => {
     // setIsSearching((prevSearch) => !prevSearch);

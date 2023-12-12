@@ -46,7 +46,7 @@ const SignupPage = () => {
     if (Object.keys(errors).length === 0) {
       try {
         const response = await fetch(
-          "http://localhost:4000/api/todo/register",
+          `${process.env.REACT_APP_Base_Url}/register`,
           {
             method: "POST",
             body: JSON.stringify(formValues),
@@ -101,7 +101,7 @@ const SignupPage = () => {
         </IconButton>
         <form className="form" onSubmit={handleSubmit}>
           <h1>Sign Up</h1>
-          <label for="name">Name</label>
+          <label htmlFor="name">Name</label>
           <input
             type="text"
             className={formErrors.name ? "input-error" : "form-input"}
@@ -111,7 +111,7 @@ const SignupPage = () => {
             onChange={handleChange}
           />
 
-          <label for="email">Email</label>
+          <label htmlFor="email">Email</label>
           <input
             type="email"
             className={formErrors.email ? "input-error" : "form-input"}
@@ -120,7 +120,7 @@ const SignupPage = () => {
             value={formValues.email}
             onChange={handleChange}
           />
-          <label for="password">Password</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             className={formErrors.password ? "input-error" : "form-input"}
@@ -129,7 +129,7 @@ const SignupPage = () => {
             value={formValues.password}
             onChange={handleChange}
           />
-          <label for="password">Address</label>
+          <label htmlFor="password">Address</label>
           <textarea
             type="Address"
             className={formErrors.Address ? "input-error" : "form-textarea"}

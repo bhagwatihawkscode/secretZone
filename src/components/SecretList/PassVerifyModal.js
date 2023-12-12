@@ -50,7 +50,7 @@ const PassVerifyModal = ({
       };
       const data = await NormalCall(
         userdata,
-        "http://127.0.0.1:4000/api/todo/PasswordVerify"
+        `${process.env.REACT_APP_Base_Url}/PasswordVerify`
       );
       const { success, message } = data;
       if (success === true) {

@@ -46,7 +46,8 @@ const ForgetPass = () => {
     if (Object.keys(errors).length === 0) {
       try {
         const response = await fetch(
-          "http://localhost:4000/api/todo/forgot-password",
+          // "http://localhost:4000/api/todo/forgot-password"
+          `${process.env.REACT_APP_Base_Url}/forgot-password`,
           {
             method: "POST",
             body: JSON.stringify(formValues),
@@ -111,7 +112,7 @@ const ForgetPass = () => {
             Enter your email and we'll send you a link to reset your password.
           </p>
 
-          <label for="email">Email</label>
+          <label htmlFor="email">Email</label>
           <input
             type="email"
             className={formErrors.email ? "input-error" : "form-input"}

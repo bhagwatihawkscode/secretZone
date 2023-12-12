@@ -50,7 +50,7 @@ const FilePassModal = ({
     } else {
       const data = await NormalCall(
         userdata,
-        " http://127.0.0.1:4000/api/todo/generatepassword"
+        `${process.env.REACT_APP_Base_Url}/generatepassword`
       );
       const { statusCode, message } = data;
 

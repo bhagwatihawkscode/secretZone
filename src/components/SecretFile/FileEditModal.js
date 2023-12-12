@@ -41,7 +41,7 @@ const FileEditModal = ({
 }) => {
   const [title, setTitle] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [fileLimit, setFileLimit] = useState(false);
+
   const [isTitleEmpty, setIsTitleEmpty] = useState(false);
   const [isDropzoneEmpty, setIsDropzoneEmpty] = useState(false);
   const [iddata, setIdData] = useState("");
@@ -57,7 +57,7 @@ const FileEditModal = ({
         item.append("key", itemId);
         const response = await _Api(
           item,
-          "http://127.0.0.1:4000/api/todo/editmodalshow"
+          `${process.env.REACT_APP_Base_Url}/editmodalshow`
         );
         const { data, zipFile } = await response;
         if (data) {
@@ -92,6 +92,7 @@ const FileEditModal = ({
     if (open) {
       fetchData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemId, open]);
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -115,11 +116,9 @@ const FileEditModal = ({
           uploaded.push(fileInfo);
           setIsDropzoneEmpty(false);
 
-          if (uploaded.length === MAX_COUNT) setFileLimit(true);
-
           if (uploaded.length > MAX_COUNT) {
             handleError(`You can only add a maximum of ${MAX_COUNT} files`);
-            setFileLimit(false);
+
             limitExceeded = true;
           }
         }
@@ -152,7 +151,7 @@ const FileEditModal = ({
   const handleDeselectAll = () => {
     setUploadedFiles([]);
     setTitle("");
-    setFileLimit(false);
+
     handleClose();
   };
 
@@ -160,7 +159,6 @@ const FileEditModal = ({
     const updatedFiles = [...uploadedFiles];
     updatedFiles.splice(index, 1);
     setUploadedFiles(updatedFiles);
-    setFileLimit(false);
   };
 
   const handleSaveClick = async () => {
@@ -179,7 +177,7 @@ const FileEditModal = ({
 
       const response = await _Api(
         formData,
-        "http://127.0.0.1:4000/api/todo/Fileupdatedata"
+        `${process.env.REACT_APP_Base_Url}/Fileupdatedata`
       );
       if (response) {
         const { message } = response;

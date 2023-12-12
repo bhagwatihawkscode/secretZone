@@ -49,7 +49,7 @@ function ChildModal({ itemId, handleError, handleSuccess, closingfun }) {
     } else {
       const data = await NormalCall(
         setdata,
-        " http://127.0.0.1:4000/api/todo/PermanentUnlock"
+        `${process.env.REACT_APP_Base_Url}/PermanentUnlock`
       );
       const { statusCode, message } = data;
       if (statusCode === 201) {

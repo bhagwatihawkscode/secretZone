@@ -34,7 +34,7 @@ const SecretFile = () => {
 
   const fetchData = async () => {
     try {
-      let apiURL = "http://127.0.0.1:4000/api/todo/FileFilter";
+      let apiURL = `${process.env.REACT_APP_Base_Url}/FileFilter`;
       const dataset = new FormData();
 
       if (isSearching) {
@@ -69,6 +69,7 @@ const SecretFile = () => {
         setIsLoading(false);
       }, 1000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalClosedCount, Dates.length === 2, isSearching]);
 
   const openModal = () => {

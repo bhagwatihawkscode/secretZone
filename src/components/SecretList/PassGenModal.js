@@ -21,6 +21,7 @@ const mobileStyle = {
   "@media (max-width: 767px)": {
     width: "100%",
     height: "100%",
+    
   },
 };
 const mergedStyle = { ...style, ...mobileStyle };
@@ -50,7 +51,7 @@ const PassModal = ({
     } else {
       const data = await NormalCall(
         userdata,
-        " http://127.0.0.1:4000/api/todo/GeneratePass"
+        `${process.env.REACT_APP_Base_Url}/GeneratePass`
       );
       const { statusCode, message } = data;
 

@@ -63,7 +63,6 @@ const FileTable = ({ data, isFetchData }) => {
     setShowMobileActions(updatedShowMobileActions);
   };
   if (!data || data.length === 0) {
-    console.log("data 0 aaya");
     return (
       <div className="table-container">
         <h1 style={{ color: "#ceb04f", margin: "30px" }}>No Secrects Found</h1>
@@ -135,7 +134,7 @@ const FileTable = ({ data, isFetchData }) => {
 
       const data = await NormalCall(
         keyid,
-        "http://127.0.0.1:4000/api/todo/privacyokornot"
+        `${process.env.REACT_APP_Base_Url}/privacyokornot`
       );
 
       if (data === true) {
@@ -186,7 +185,7 @@ const FileTable = ({ data, isFetchData }) => {
   const onClickDownload = async (itemId, fileName) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:4000/api/todo/downloadzip",
+        `${process.env.REACT_APP_Base_Url}/downloadzip`,
         { keyid: itemId },
         {
           responseType: "blob",

@@ -60,7 +60,7 @@ const EditModal = ({
       item.append("key", itemId);
       const response = await _Api(
         item,
-        "http://127.0.0.1:4000/api/todo/EditData"
+        `${process.env.REACT_APP_Base_Url}/EditData`
       );
       const data = await response;
 
@@ -70,7 +70,7 @@ const EditModal = ({
         setIdData(data._id || "");
         setAddress(data.Location || "");
         setAddressInput(data.Location || "");
-        console.log(data.Location); // Set default value if data._id is undefined
+        // Set default value if data._id is undefined
       }
     };
     if (open) {
@@ -106,7 +106,7 @@ const EditModal = ({
       try {
         const response = await _Api(
           data,
-          "http://127.0.0.1:4000/api/todo/UpdateTodo"
+          `${process.env.REACT_APP_Base_Url}/UpdateTodo`
         );
         const { success, message } = response;
 

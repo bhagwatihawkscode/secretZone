@@ -45,7 +45,7 @@ const ResetPassword = () => {
     if (Object.keys(errors).length === 0) {
       try {
         const response = await fetch(
-          `http://localhost:4000/api/todo/reset-password/${token}`,
+          `${process.env.REACT_APP_Base_Url}/reset-password/${token}`,
           {
             method: "POST",
             body: JSON.stringify(formValues),
@@ -108,7 +108,7 @@ const ResetPassword = () => {
           <h1>Create Password</h1>
           <p className="setthis">Enter New password.</p>
 
-          <label for="password">Password</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             className={formErrors.password ? "input-error" : "form-input"}
@@ -117,7 +117,7 @@ const ResetPassword = () => {
             value={formValues.password}
             onChange={handleChange}
           />
-          <label for="password">Confirm Password</label>
+          <label htmlFor="password">Confirm Password</label>
           <input
             type="password"
             className={

@@ -31,7 +31,7 @@ const Slidebar = ({ onClose }) => {
         <ul>
           <li>
             <Link to="/DashBoard">Dashboard</Link>
-          </li>
+          </li> 
           <li>
             <Link to="/Secretlist">Secrets List</Link>
           </li>

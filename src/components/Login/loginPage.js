@@ -46,14 +46,18 @@ const LoginPage = () => {
     setFormErrors(errors);
     if (Object.keys(errors).length === 0) {
       try {
-        const response = await fetch("http://localhost:4000/api/todo/login", {
-          method: "POST",
-          body: JSON.stringify(formValues),
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
+        const response = await fetch(
+          // "http://localhost:4000/api/todo/login"
+          `${process.env.REACT_APP_Base_Url}/login`,
+          {
+            method: "POST",
+            body: JSON.stringify(formValues),
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
 
         if (response.ok) {
           const responseData = await response.json();
@@ -102,7 +106,7 @@ const LoginPage = () => {
           <h1>Login</h1>
           <p className="setthis">Lets Enter in Secret Zone</p>
 
-          <label for="email">Email</label>
+          <label htmlFor="email">Email</label>
           <input
             type="email"
             className={formErrors.email ? "input-error" : "form-input"}
@@ -111,7 +115,7 @@ const LoginPage = () => {
             onChange={handleChange}
             placeholder="Xyz@gmail.com"
           />
-          <label for="password">Password</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             className={formErrors.password ? "input-error" : "form-input"}
