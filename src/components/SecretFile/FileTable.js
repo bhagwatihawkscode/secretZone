@@ -368,9 +368,6 @@ const FileTable = ({ data, isFetchData }) => {
                           onClose={() => closeMobileActions(item._id)}
                           onOpen={() => toggleMobileActions(item._id)}
                           open={showMobileActions[item._id]}
-                          sx={{
-                            position: "absolute",
-                          }}
                           direction="down"
                           FabProps={{
                             style: { backgroundColor: "rgba(0,0,0,0.6)" },

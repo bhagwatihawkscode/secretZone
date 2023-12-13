@@ -9,7 +9,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import "../SecretList/Secret.css";
 import { useDropzone } from "react-dropzone";
 import { _Api } from "../../Api";
-import JSZip from "jszip";
+import DownloadIcon from "@mui/icons-material/Download";
+import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -41,11 +42,10 @@ const FileEditModal = ({
 }) => {
   const [title, setTitle] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
-
+  const [filename, setfilename] = useState();
   const [isTitleEmpty, setIsTitleEmpty] = useState(false);
   const [isDropzoneEmpty, setIsDropzoneEmpty] = useState(false);
   const [iddata, setIdData] = useState("");
-  const [files, setFiles] = useState({});
 
   const onDrop = (acceptedFiles) => {
     handleUploadFiles(acceptedFiles);
@@ -59,28 +59,12 @@ const FileEditModal = ({
           item,
           `${process.env.REACT_APP_Base_Url}/editmodalshow`
         );
-        const { data, zipFile } = await response;
+        const { data } = await response;
         if (data) {
           setTitle(data.Title || "");
 
-          // Use JSZip to unzip the content
-          if (zipFile.content) {
-            const zip = new JSZip();
-            const unzipped = await zip.loadAsync(zipFile.content, {
-              base64: true,
-            });
-
-            // Display unzipped content
-            const filesContent = await Promise.all(
-              Object.keys(unzipped.files).map(async (relativePath) => ({
-                name: relativePath,
-                content: await unzipped.file(relativePath).async("text"),
-              }))
-            );
-
-            setFiles({ filename: zipFile.filename, content: filesContent });
-          }
-
+          // Make a request to Mega to get the file content
+          setfilename(data.FileName);
           setIdData(data._id || "");
         }
       } catch (error) {
@@ -88,7 +72,6 @@ const FileEditModal = ({
         handleError("Error fetching data");
       }
     };
-
     if (open) {
       fetchData();
     }
@@ -159,6 +142,32 @@ const FileEditModal = ({
     const updatedFiles = [...uploadedFiles];
     updatedFiles.splice(index, 1);
     setUploadedFiles(updatedFiles);
+  };
+  const onClickDownload = async (itemId, fileName) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_Base_Url}/downloadzip`,
+        { keyid: itemId },
+        {
+          responseType: "blob",
+        }
+      );
+
+      if (response.status !== 200) {
+        throw new Error(`Download failed with status ${response.status}`);
+      }
+
+      handleSuccess("Download Start");
+      const blob = new Blob([response.data], { type: "application/zip" });
+      const downloadLink = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = downloadLink;
+      link.download = title + ".zip";
+      link.click();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleSaveClick = async () => {
@@ -271,14 +280,20 @@ const FileEditModal = ({
                     style={{ color: "#EAEAEA", marginTop: "10px" }}
                   >
                     <div>
-                      <h5>Old File Names</h5>
-                      {files.content && (
-                        <ul>
-                          {files.content.map((file, index) => (
-                            <li key={index}>{file.name}</li>
-                          ))}
-                        </ul>
-                      )}
+                      <h5>Old File Download</h5>
+                      <div style={{ display: "flex" }}>
+                        <p style={{ color: "#ceb04f" }}>
+                          FileName:- {filename}
+                        </p>
+                        <IconButton
+                          onClick={() => {
+                            onClickDownload(itemId);
+                          }}
+                          style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+                        >
+                          <DownloadIcon style={{ color: "#EAEAEA" }} />
+                        </IconButton>
+                      </div>
                     </div>
                   </div>
                 ) : (
