@@ -1,22 +1,20 @@
-import React from "react";
-import "../Login/Auth.css";
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { validation } from "./validation";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, Link } from "react-router-dom";
+import { validation } from "./validation";
 import { IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
+import "../Login/Auth.css";
 const SignupPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [formValues, setFormValues] = useState({});
   const [formErrors, setFormErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
-    // Clear the error for this field when it changes
     setFormErrors({ ...formErrors, [name]: false });
   };
 
@@ -24,6 +22,7 @@ const SignupPage = () => {
     toast.error(err, {
       position: "top-right",
     });
+
   const handleSuccess = (msg) =>
     toast.success(msg, {
       position: "top-right",
@@ -70,7 +69,6 @@ const SignupPage = () => {
             handleError(message);
           }
         } else {
-          // Handle non-OK responses (e.g., 400 Bad Request)
           const errorData = await response.json();
           handleError(errorData.message);
         }
@@ -80,81 +78,135 @@ const SignupPage = () => {
       }
     }
   };
+
   const backload = () => {
     navigate("/login");
   };
 
+  useEffect(() => {
+    const loadImage = (src) => {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = resolve;
+        image.onerror = reject;
+        image.src = src;
+      });
+    };
+
+    const loadAssets = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      await Promise.all([
+        loadImage("https://cdn-lite.ip2location.com/img/sign-up.png"),
+        // Add more assets if needed
+      ]);
+
+      setLoading(false);
+    };
+
+    loadAssets();
+  }, []);
+
   return (
     <div className="main">
-      <div className="form-container">
-        <IconButton
-          className="back-btn"
-          style={{
-            position: "absolute",
-            top: "5px",
-            left: "8px",
-            color: "#ceb04f",
-          }}
-          onClick={backload}
-        >
-          <ArrowBackIcon />
-        </IconButton>
-        <form className="form" onSubmit={handleSubmit}>
-          <h1>Sign Up</h1>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            className={formErrors.name ? "input-error" : "form-input"}
-            name="name"
-            value={formValues.name}
-            placeholder="Name"
-            onChange={handleChange}
-          />
-
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            className={formErrors.email ? "input-error" : "form-input"}
-            name="email"
-            placeholder="Xyz@gmail.com"
-            value={formValues.email}
-            onChange={handleChange}
-          />
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            className={formErrors.password ? "input-error" : "form-input"}
-            name="password"
-            placeholder="Enter your password"
-            value={formValues.password}
-            onChange={handleChange}
-          />
-          <label htmlFor="password">Address</label>
-          <textarea
-            type="Address"
-            className={formErrors.Address ? "input-error" : "form-textarea"}
-            name="Address"
-            placeholder="Enter your Address"
-            value={formValues.Address}
-            onChange={handleChange}
-          />
-
-          <button type="submit">Create Account</button>
-
-          <Link to="/login" className="setthis">
-            Have an Account ?Login
-          </Link>
-          {/* <Link>Already have an account? <span href="#">Sign in</span></Link> */}
-        </form>
-
-        <div className="image-container">
-          <img
-            src="https://cdn-lite.ip2location.com/img/sign-up.png"
-            alt="signuppage"
-          />
+      {loading ? (
+        <div className="loading-animation">
+          {/* Your loading animation */}
+          <p>S</p>
+          <p>e</p>
+          <p>c</p>
+          <p>r</p>
+          <p>e</p>
+          <p>t</p>
+          <p>Z</p>
+          <p>o</p>
+          <p>n</p>
+          <p>e</p>
         </div>
-        <ToastContainer />
-      </div>
+      ) : (
+        <div className="form-container">
+          <IconButton
+            className="back-btn"
+            style={{
+              position: "absolute",
+              top: "5px",
+              left: "8px",
+              color: "#ceb04f",
+            }}
+            onClick={backload}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+          <form className="form" onSubmit={handleSubmit}>
+            <h1>Sign Up</h1>
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              className={formErrors.name ? "input-error" : "form-input"}
+              name="name"
+              value={formValues.name}
+              placeholder="Name"
+              onChange={handleChange}
+            />
+            {formErrors.name && (
+              <p className="error-message">Please enter Name!</p>
+            )}
+
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              className={formErrors.email ? "input-error" : "form-input"}
+              name="email"
+              placeholder="Xyz@gmail.com"
+              value={formValues.email}
+              onChange={handleChange}
+            />
+            {formErrors.email && (
+              <p className="error-message">Please enter a valid Email!</p>
+            )}
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              className={formErrors.password ? "input-error" : "form-input"}
+              name="password"
+              placeholder="Enter your password"
+              value={formValues.password}
+              onChange={handleChange}
+            />
+            {formErrors.password && (
+              <p className="error-message">
+                Password must have at least 8 characters, one uppercase letter,
+                one special character, and one digit.
+              </p>
+            )}
+            <label htmlFor="Address">Address</label>
+            <textarea
+              type="Address"
+              className={formErrors.Address ? "input-error" : "form-textarea"}
+              name="Address"
+              placeholder="Enter your Address"
+              value={formValues.Address}
+              onChange={handleChange}
+            />
+            {formErrors.Address && (
+              <p className="error-message">Please enter a valid address!</p>
+            )}
+            <button type="submit">Create Account</button>
+
+            <Link to="/login" className="setthis">
+              Have an Account ?Login
+            </Link>
+          </form>
+
+          <div className="image-container">
+            <img
+              src="https://cdn-lite.ip2location.com/img/sign-up.png"
+              alt="signuppage"
+            />
+          </div>
+          <ToastContainer />
+        </div>
+      )}
     </div>
   );
 };

@@ -461,7 +461,7 @@ background: #e0e0e0;
     height: 30px;
     text-align: center;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
     padding: 10px;
   }
@@ -469,6 +469,9 @@ background: #e0e0e0;
     .form1-container {
       flex-direction : column;
       
+  }
+  .mobile-chart{
+    height:200px !important;
   }
   .form1 button{
     padding-left: 20px;

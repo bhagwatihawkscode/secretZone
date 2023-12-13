@@ -47,26 +47,28 @@
      display: block;
      width: 80%;
      margin: 10px 0px;
-     padding-left: 5px;
+   
+     padding: 3px 5px;
      border: none;
      border-radius:5px;
      border: 2px solid #ceb04f;
      outline: none;
      font-family: "Nunito", serif;
-     font-size: 1.125rem;
+     font-size: 1rem;
       }
+     
 
       .input-error{
         display: block;
         width: 80%;
         margin: 10px 0px;
-        padding-left: 5px;
+        padding: 3px 5px;
         border: none;
         border-radius:5px;
         border: 2px solid red;
         outline: none;
         font-family: "Nunito", serif;
-        font-size: 1.125rem;
+        font-size: 1rem;
       }
       .setthis{
         font-weight: bold;
@@ -81,13 +83,19 @@
         display: block;
         width: 80%;
         margin: 10px 0px;
-        padding-left: 5px;
+        padding: 3px 5px;
         border: none;
         border-radius:5px;
         border: 2px solid #ceb04f;
         outline: none;
         font-family: "Nunito", serif;
-        font-size: 1.125rem;
+        font-size: 1rem;
+      }
+      .error-message {
+        color: red;
+        font-size: 10px;
+      
+        width: 80%; /* Adjust the margin as needed */
       }
   .form label{
     
@@ -223,3 +231,55 @@
       margin-top: 10px;
     }
   }
+  
+.loading-animation {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  padding-top: 40vh;
+  color: #ceb04f;
+  font-size: 4em;
+
+}
+
+.loading-animation p {
+  display: inline-block;
+  animation: bounce 1s infinite ease-in-out;
+  color: #ceb04f;
+    font-weight: bolder;
+}
+
+.loading-animation p:nth-of-type(2) {
+  animation-delay: 0.1s;
+}
+
+.loading-animation p:nth-of-type(3) {
+  animation-delay: 0.2s;
+}
+
+.loading-animation p:nth-of-type(4) {
+  animation-delay: 0.3s;
+}
+
+.loading-animation p:nth-of-type(5) {
+  animation-delay: 0.4s;
+}
+
+.loading-animation p:nth-of-type(6) {
+  animation-delay: 0.5s;
+}
+
+.loading-animation p:nth-of-type(7) {
+  animation-delay: 0.6s;
+}
+
+@keyframes bounce {
+  30% {
+    transform: translateY(-100px);
+  }
+  60% {
+    transform: none;
+  }
+}

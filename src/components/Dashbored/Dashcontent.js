@@ -34,16 +34,22 @@ const Dashcontent = () => {
   };
 
   const handleSearchKeyPress = async (event) => {
-    if (event.key === "Enter") {
+    setSearchHistory([]);
+    if (event.key === "Enter" && searchValue !== "") {
       setAnchorEl(true);
-      // Update search history here if needed
+
       let apiURL = `${process.env.REACT_APP_Base_Url}/LocationFilter`;
       const dataset = new FormData();
       dataset.append("query", searchValue);
+
       const response = await _Api(dataset, apiURL);
       const { arraydata } = await response;
 
-      setSearchHistory(arraydata);
+      if (Array.isArray(arraydata) && arraydata.length > 0) {
+        setSearchHistory(arraydata);
+      } else {
+        setSearchHistory([]); // Clear search history if there is no data
+      }
     }
   };
 
@@ -114,62 +120,67 @@ const Dashcontent = () => {
             className="dash-boredinput"
           />
           {anchorEl && (
-            <div
-              className="autocomplete-items"
-              style={{
-                width: "100%", // Set the width to 100% to match the TextField
-                position: "absolute",
-                top: "100%", // Adjust as needed
-                left: 0,
-                zIndex: 1,
-              }}
-            >
-              {searchHistory.map((item, index) => (
+            <>
+              {searchHistory && searchHistory.length > 0 ? (
                 <div
-                  key={index}
+                  className="autocomplete-items"
                   style={{
-                    margin: "10px",
-                    backgroundColor: "#ceb04f",
-                    borderRadius: "10px",
+                    width: "100%", // Set the width to 100% to match the TextField
+                    position: "absolute",
+                    top: "100%", // Adjust as needed
+                    left: 0,
+                    zIndex: 1,
                   }}
                 >
-                  Secret Title: {item}
+                  {searchHistory.map((item, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        margin: "10px",
+                        backgroundColor: "#ceb04f",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      Secret Title: {item}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              ) : (
+                <div
+                  style={{
+                    width: "100%",
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  <div
+                    style={{
+                      margin: "10px",
+                      backgroundColor: "#ceb04f",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    No Content
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
       <div className="uper-dash">
         <div className="card">
           <div className="card-title ">
-            <ListAltIcon style={{ color: "#EAEAEA" }} />
-            <p style={{ color: "#EAEAEA", marginBottom: "0rem" }}>
-              Total Secrets
-            </p>
-          </div>
-          {isLoading ? (
-            // Show loader while data is being fetched
-            <div
+            <TodayIcon style={{ color: "#EAEAEA" }} />
+            <p
               style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                color: "#EAEAEA",
+                marginBottom: "0rem",
+                marginLeft: "5px",
               }}
             >
-              <div className="loader"></div>
-            </div>
-          ) : (
-            // Show LineChart when data is available
-            <div className="card_image">{TotalCount}</div>
-          )}
-        </div>
-        <div className="card">
-          <div className="card-title ">
-            <TodayIcon style={{ color: "#EAEAEA" }} />
-            <p style={{ color: "#EAEAEA", marginBottom: "0rem" }}>
               Today Secret
             </p>
           </div>
@@ -193,8 +204,46 @@ const Dashcontent = () => {
         </div>
         <div className="card">
           <div className="card-title ">
+            <ListAltIcon style={{ color: "#EAEAEA" }} />
+            <p
+              style={{
+                color: "#EAEAEA",
+                marginBottom: "0rem",
+                marginLeft: "5px",
+              }}
+            >
+              Total Secrets
+            </p>
+          </div>
+          {isLoading ? (
+            // Show loader while data is being fetched
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <div className="loader"></div>
+            </div>
+          ) : (
+            // Show LineChart when data is available
+            <div className="card_image">{TotalCount}</div>
+          )}
+        </div>
+
+        <div className="card">
+          <div className="card-title ">
             <TopicIcon style={{ color: "#EAEAEA" }} />
-            <p style={{ color: "#EAEAEA", marginBottom: "0rem" }}>
+            <p
+              style={{
+                color: "#EAEAEA",
+                marginBottom: "0rem",
+                marginLeft: "5px",
+              }}
+            >
               Total Secret File
             </p>
           </div>
@@ -219,7 +268,15 @@ const Dashcontent = () => {
         <div className="card">
           <div className="card-title ">
             <ShareLocationIcon style={{ color: "#EAEAEA" }} />
-            <p style={{ color: "#EAEAEA", marginBottom: "0rem" }}>Locations</p>
+            <p
+              style={{
+                color: "#EAEAEA",
+                marginBottom: "0rem",
+                marginLeft: "5px",
+              }}
+            >
+              Locations
+            </p>
           </div>
           {isLoading ? (
             // Show loader while data is being fetched

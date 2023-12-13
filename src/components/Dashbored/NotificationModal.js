@@ -40,6 +40,15 @@ const NotificationModal = ({ open, handleClose, notification }) => {
             className="Scrollhide"
             style={{ height: "400px", overflowY: "scroll" }}
           >
+            <h1
+              style={{
+                color: "#ceb04f",
+                textAlign: "center",
+                marginBottom: "10px",
+              }}
+            >
+              Notifications
+            </h1>
             {notification.length !== 0 ? (
               notification.map((item, index) => (
                 <div
@@ -82,10 +91,14 @@ const NotificationModal = ({ open, handleClose, notification }) => {
                 style={{
                   margin: " 20px 10px",
                   textAlign: "center",
-                  backgroundColor: "black",
+
+                  display: "flex",
+                  alignItems: "center",
+                  height: "100%",
+                  justifyContent: "center",
                 }}
               >
-                <h1 style={{ color: "#ceb04f" }}>No notifications</h1>
+                <h1 style={{ color: "#EAEAEA" }}>No notifications</h1>
               </div>
             )}
           </div>

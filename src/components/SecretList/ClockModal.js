@@ -181,6 +181,7 @@ const ClockModal = ({
                 label="Time"
                 value={value || null}
                 onChange={(newValue) => setValue(newValue)}
+                className="time-picker"
               />
             </LocalizationProvider>
             <div className="btn-div">

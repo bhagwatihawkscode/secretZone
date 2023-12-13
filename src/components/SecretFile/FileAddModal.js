@@ -33,7 +33,7 @@ const MAX_COUNT = 3;
 const FileAddModal = ({ open, handleClose, handleError, handleSuccess }) => {
   const [title, setTitle] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [isTitleEmpty, setIsTitleEmpty] = useState(false);
   const [isDropzoneEmpty, setIsDropzoneEmpty] = useState(false);
 
@@ -113,30 +113,27 @@ const FileAddModal = ({ open, handleClose, handleError, handleSuccess }) => {
       setIsTitleEmpty(title === "");
       setIsDropzoneEmpty(uploadedFiles.length === 0);
     } else {
-      // const formData = new FormData();
-      // formData.append("title", title);
+      setIsLoading(true); // Set loading state to true
 
-      // // Append files array to formData
-      // uploadedFiles.forEach((file, index) => {
-      //   formData.append(`files[${index}]`, file); // Append the entire file object
-      // });
-      const formData = { title: title, files: uploadedFiles };
+      try {
+        const formData = { title: title, files: uploadedFiles };
+        const response = await _Api(
+          formData,
+          `${process.env.REACT_APP_Base_Url}/FileData`
+        );
 
-      const response = await _Api(
-        formData,
-        `${process.env.REACT_APP_Base_Url}/FileData`
-      );
-      if (response) {
-        const { message } = response;
-        handleSuccess(message);
+        if (response) {
+          const { message } = response;
+          handleSuccess(message);
+        } else {
+          handleError("Problem To Upload File");
+        }
+      } catch (error) {
+        handleError("Error uploading files");
+      } finally {
+        setIsLoading(false); // Set loading state to false after completion
         handleClose();
         setUploadedFiles([]);
-        setTitle("");
-      } else {
-        handleError("Problem To Upload File");
-        handleClose();
-        setUploadedFiles([]);
-
         setTitle("");
       }
     }
@@ -219,7 +216,7 @@ const FileAddModal = ({ open, handleClose, handleError, handleSuccess }) => {
                       onClick={() => handleDeselectFile(index)}
                       style={{ marginLeft: "10px" }}
                     >
-                      <CloseIcon />
+                      <CloseIcon style={{ color: "#EAEAEA" }} />
                     </IconButton>
                     {/* <button
                       className="canncel-btn"
@@ -238,10 +235,18 @@ const FileAddModal = ({ open, handleClose, handleError, handleSuccess }) => {
                   justifyContent: "space-between",
                 }}
               >
-                <button className="add1-btn" onClick={() => handleSaveClick()}>
-                  Save
-                </button>
-
+                {isLoading ? (
+                  <p>Wait a sec...</p>
+                ) : (
+                  <>
+                    <button
+                      className="add1-btn"
+                      onClick={() => handleSaveClick()}
+                    >
+                      Save
+                    </button>
+                  </>
+                )}
                 <button
                   className="canncel-btn"
                   onClick={() => handleDeselectAll()}

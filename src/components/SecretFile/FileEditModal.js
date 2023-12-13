@@ -46,7 +46,7 @@ const FileEditModal = ({
   const [isTitleEmpty, setIsTitleEmpty] = useState(false);
   const [isDropzoneEmpty, setIsDropzoneEmpty] = useState(false);
   const [iddata, setIdData] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
   const onDrop = (acceptedFiles) => {
     handleUploadFiles(acceptedFiles);
   };
@@ -182,29 +182,32 @@ const FileEditModal = ({
       // uploadedFiles.forEach((file, index) => {
       //   formData.append(`files[${index}]`, file); // Append the entire file object
       // });
-      const formData = { title: title, files: uploadedFiles, id: iddata };
+      setIsLoading(true);
+      try {
+        const formData = { title: title, files: uploadedFiles, id: iddata };
 
-      const response = await _Api(
-        formData,
-        `${process.env.REACT_APP_Base_Url}/Fileupdatedata`
-      );
-      if (response) {
-        const { message } = response;
-        handleSuccess(message);
-        handleClose();
-        setUploadedFiles([]);
-        setTitle("");
+        const response = await _Api(
+          formData,
+          `${process.env.REACT_APP_Base_Url}/Fileupdatedata`
+        );
+
+        if (response) {
+          const { message } = response;
+          handleSuccess(message);
+        } else {
+          handleError("Problem To Upload File");
+        }
+      } catch (error) {
+        handleError("Error uploading files");
+      } finally {
+        setIsLoading(false);
         isFetch();
-      } else {
-        handleError("Problem To Upload File");
         handleClose();
         setUploadedFiles([]);
-
         setTitle("");
       }
     }
   };
-
   return (
     <div>
       <Modal
@@ -289,7 +292,12 @@ const FileEditModal = ({
                           onClick={() => {
                             onClickDownload(itemId);
                           }}
-                          style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+                          style={{
+                            backgroundColor: "rgba(0,0,0,0.7)",
+                            width: "20px",
+                            height: "20px",
+                            margin: "5px",
+                          }}
                         >
                           <DownloadIcon style={{ color: "#EAEAEA" }} />
                         </IconButton>
@@ -309,7 +317,7 @@ const FileEditModal = ({
                           onClick={() => handleDeselectFile(index)}
                           style={{ marginLeft: "10px" }}
                         >
-                          <CloseIcon />
+                          <CloseIcon style={{ color: "#EAEAEA" }} />
                         </IconButton>
                         {/* <button
               className="canncel-btn"
@@ -331,9 +339,18 @@ const FileEditModal = ({
                   justifyContent: "space-between",
                 }}
               >
-                <button className="add1-btn" onClick={() => handleSaveClick()}>
-                  Save
-                </button>
+                {isLoading ? (
+                  <p>Wait a sec...</p>
+                ) : (
+                  <>
+                    <button
+                      className="add1-btn"
+                      onClick={() => handleSaveClick()}
+                    >
+                      Save
+                    </button>
+                  </>
+                )}
 
                 <button
                   className="canncel-btn"

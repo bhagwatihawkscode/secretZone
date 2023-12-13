@@ -103,7 +103,9 @@ const Dashboard = ({ children }) => {
       }
     }
     login();
-  });
+    // eslint-disable-next-line
+  }, []);
+
   useEffect(() => {
     async function fetchData() {
       if (isLoggedIn) {
@@ -134,7 +136,7 @@ const Dashboard = ({ children }) => {
               // Update state and local storage with user profile image URL
               const userProfileImage =
                 data.profileImage === ""
-                  ? "https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg"
+                  ? "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png"
                   : `https://res.cloudinary.com/dsvlrlr51/image/upload/${data.profileImage}`;
               setuserprofile(userProfileImage);
 
@@ -296,7 +298,9 @@ const Dashboard = ({ children }) => {
                         backgroundColor: "rgba(0,0,0,0.6)",
                       }}
                     >
-                      <h3 style={{ color: "#ceb04f" }}>No notifications</h3>
+                      <h3 style={{ color: "#ceb04f", fontSize: "20px" }}>
+                        No notifications
+                      </h3>
                     </div>
                   )}
                 </div>
@@ -308,7 +312,13 @@ const Dashboard = ({ children }) => {
                 <img
                   src={userprofile}
                   alt="prof"
-                  style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    objectPosition: "50% 50%", // Center the image within the container
+                  }}
                 />
               </Dropdown.Toggle>
 

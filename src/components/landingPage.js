@@ -1,29 +1,47 @@
-import React from "react";
-import "./style.css";
-import { useState, useEffect } from "react";
-import pngim from "../assests/image-2.png";
-import imgee from "../assests/images-3.jpg";
+import React, { useState, useEffect } from "react";
+
 import { CDBModalFooter, CDBBtn, CDBIcon, CDBBox } from "cdbreact";
 import { useNavigate } from "react-router-dom";
+import pngim from "../assests/image-2.png";
+import imgee from "../assests/images-3.jpg";
+import "./style.css";
 
 const LandingPage = () => {
   const [loading, setLoading] = useState(true); // State to manage loading
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulate loading for 2 seconds (you can replace this with your actual loading logic)
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 5000);
+    const loadImage = (src) => {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = resolve;
+        image.onerror = reject;
+        image.src = src;
+      });
+    };
 
-    return () => clearTimeout(timer);
+    const loadAssets = async () => {
+      // Simulate loading for 2 seconds (you can replace this with your actual loading logic)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Load all your assets here
+      await Promise.all([
+        loadImage(pngim),
+        loadImage(imgee),
+        // Add more assets if needed
+      ]);
+
+      setLoading(false); // Once assets are loaded, set loading to false
+    };
+
+    loadAssets();
   }, []); // Run only once on component mount
-
-  const navigate = useNavigate();
 
   return (
     <>
       {loading ? (
         <div className="loading-animation">
+          {/* Your loading animation */}
           <p>S</p>
           <p>e</p>
           <p>c</p>

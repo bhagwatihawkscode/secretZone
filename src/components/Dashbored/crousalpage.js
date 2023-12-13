@@ -13,13 +13,13 @@ const LineChartComponent = ({ dataCount, dataFileCount }) => {
         label: "Secrets",
         data: [...dataCount],
         borderColor: "#4f6dce",
-        backgroundColor: "#EAEAEA",
+        backgroundColor: "rgba(79, 109, 206, 0.4)",
       },
       {
         label: "Files",
         data: [...dataFileCount],
         borderColor: "#CE4FAD",
-        backgroundColor: "#EAEAEA",
+        backgroundColor: "rgba(206, 79, 173, 0.4)",
       },
     ],
   };
@@ -35,9 +35,18 @@ const LineChartComponent = ({ dataCount, dataFileCount }) => {
         text: "Secrets and Files Created On Day of Week",
         color: "#EAEAEA",
       },
-      tooltip: {
-        enabled: true, // Enable tooltips
-        mode: "index", // Display multiple tooltips when hovering over multiple datasets
+      tooltips: {
+        callbacks: {
+          title: function (tooltipItem, data) {
+            // Customize title based on dataset index
+            const datasetIndex = tooltipItem[0].datasetIndex;
+            return datasetIndex === 0 ? "Secrets" : "Files";
+          },
+          label: function (tooltipItem, data) {
+            // Customize label as needed
+            return "Count: " + tooltipItem.formattedValue;
+          },
+        },
       },
     },
     scales: {
@@ -59,7 +68,7 @@ const LineChartComponent = ({ dataCount, dataFileCount }) => {
           text: "Count",
           color: "#EAEAEA",
         },
-        suggestedMin: 0,
+        beginAtZero: true,
         ticks: {
           color: "#EAEAEA",
         },
@@ -69,6 +78,7 @@ const LineChartComponent = ({ dataCount, dataFileCount }) => {
       duration: 2000, // Set the duration of the animation in milliseconds
       easing: "linear", // You can choose different easing functions
     },
+
     maintainAspectRatio: false, // Disable aspect ratio to allow custom height and width
     height: "400px", // Set the height of the chart
     width: "80%",
@@ -87,20 +97,25 @@ const LineChartComponent = ({ dataCount, dataFileCount }) => {
         alignItems: "center",
       }}
     >
-      {legendItems.map((item, index) => (
-        <div key={index} style={{ display: "flex", alignItems: "center" }}>
+      <div style={{ display: "flex" }}>
+        {legendItems.map((item, index) => (
           <div
-            style={{
-              width: "20px",
-              height: "20px",
-              backgroundColor: item.color,
-              marginRight: "5px",
-            }}
-          ></div>
-          <span>{item.label}</span>
-        </div>
-      ))}
-      <div style={{ height: "400px", width: "80%" }}>
+            key={index}
+            style={{ display: "flex", alignItems: "center", margin: "10px" }}
+          >
+            <div
+              style={{
+                width: "20px",
+                height: "20px",
+                backgroundColor: item.color,
+                marginRight: "5px",
+              }}
+            ></div>
+            <span style={{ color: "#EAEAEA" }}>{item.label}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ height: "400px", width: "80%" }} className="mobile-chart">
         <Line data={data} options={options} className="bhagu" />
       </div>
     </div>
