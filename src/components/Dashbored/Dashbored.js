@@ -111,46 +111,41 @@ const Dashboard = ({ children }) => {
       if (isLoggedIn) {
         try {
           // Check if user profile image URL is in local storage
-          const storedProfileImage = localStorage.getItem("userProfileImage");
+          // const storedProfileImage = localStorage.getItem("userProfileImage");
 
-          if (storedProfileImage) {
-            setuserprofile(storedProfileImage);
-          } else {
-            const response = await fetch(
-              `${process.env.REACT_APP_Base_Url}/DataSend`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  authorization: localStorage.getItem("token"),
-                },
-                credentials: "include",
-              }
-            );
-
-            if (!response.ok) {
-              navigate("/login");
-            } else {
-              const responseData = await response.json();
-              const { data } = responseData;
-
-              setroomid(data._id);
-              localStorage.setItem("roomid", data._id);
-              // Update state and local storage with user profile image URL
-              const defaultProfileImage =
-                "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png";
-
-              const userProfileImage =
-                data.profileImage === "" ||
-                !localStorage.getItem("userProfileImage")
-                  ? defaultProfileImage
-                  : `https://res.cloudinary.com/dsvlrlr51/image/upload/${data.profileImage}`;
-
-              setuserprofile(userProfileImage);
-
-              // Fetch notifications
-              fetchNotifications();
+          const response = await fetch(
+            `${process.env.REACT_APP_Base_Url}/DataSend`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                authorization: localStorage.getItem("token"),
+              },
+              credentials: "include",
             }
+          );
+
+          if (!response.ok) {
+            navigate("/login");
+          } else {
+            const responseData = await response.json();
+            const { data } = responseData;
+
+            setroomid(data._id);
+            localStorage.setItem("roomid", data._id);
+            // Update state and local storage with user profile image URL
+            const defaultProfileImage =
+              "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png";
+
+            const userProfileImage =
+              data.profileImage === ""
+                ? defaultProfileImage
+                : `https://res.cloudinary.com/dsvlrlr51/image/upload/${data.profileImage}`;
+
+            setuserprofile(userProfileImage);
+
+            // Fetch notifications
+            fetchNotifications();
           }
         } catch (error) {
           console.error("Error:", error);

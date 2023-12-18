@@ -144,21 +144,20 @@ const ProfileCard = () => {
     }
   };
   useEffect(() => {
-    if (userData.profileImage === "" || !userData.profileImage) {
-      setImages(
-        "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png"
-      );
-    } else {
-      setImages(
-        `https://res.cloudinary.com/dsvlrlr51/image/upload/${userData.profileImage}`
-      );
-      localStorage.setItem(
-        "userProfileImage",
-        `https://res.cloudinary.com/dsvlrlr51/image/upload/${userData.profileImage}`
-      );
+    try {
+      if (userData.profileImage === "" || !userData.profileImage) {
+        const defaultImageUrl =
+          "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png";
+        setImages(defaultImageUrl);
+      } else {
+        const imageUrl = `https://res.cloudinary.com/dsvlrlr51/image/upload/${userData.profileImage}`;
+        setImages(imageUrl);
+        localStorage.setItem("userProfileImage", imageUrl);
+      }
+    } catch (error) {
+      console.error("Error setting user profile image:", error);
     }
-  }, [userData, userData.profileImage]);
-
+  }, [userData.profileImage]);
   return (
     <div className="main">
       <form
