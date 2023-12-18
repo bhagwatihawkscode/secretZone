@@ -11,6 +11,7 @@ import FavList from "./components/favlist/FavList";
 import SecretFile from "./components/SecretFile/Secretfile";
 import ForgetPass from "./components/Login/ForgetPass";
 import ResetPassword from "./components/Login/RestPassWord";
+import SecretRoom from "./components/SecretRoom/SecretRoom";
 
 function App() {
   return (
@@ -59,6 +60,14 @@ function App() {
           element={
             <Dashboard>
               <SecretFile />
+            </Dashboard>
+          }
+        />
+        <Route
+          path="/SecretRoom"
+          element={
+            <Dashboard>
+              <SecretRoom />
             </Dashboard>
           }
         />

@@ -3,7 +3,7 @@ import "./Secret.css";
 import Table from "./Table";
 import TransitionsModal from "./AddModel";
 import { NormalCall, _Api } from "../../Api";
-
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,7 +13,7 @@ import EditModal from "./EditModal";
 import Select from "react-select";
 import SkeltonComp from "./Skelton";
 import { useNavigate } from "react-router-dom";
-
+import { IconButton, useMediaQuery } from "@mui/material";
 const Secretlist = () => {
   const { state, search } = useLocation();
 
@@ -31,6 +31,7 @@ const Secretlist = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width: 600px)");
   // console.log(Dates[0].toString());
   const optionsdata = [
     { value: "Select", label: "Select" },
@@ -195,6 +196,15 @@ const Secretlist = () => {
                   }
                 }}
               />
+              {isMobile && (
+                <IconButton
+                  className="mobile-search-button"
+                  onClick={handleSearch}
+                  style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+                >
+                  <ArrowForwardIcon style={{ color: "#ceb04f" }} />
+                </IconButton>
+              )}
             </div>
 
             <div className="inner-serachdiv">
@@ -224,7 +234,7 @@ const Secretlist = () => {
               />
               <DatePicker
                 value={Dates}
-                onChange={(value) => setDate(value)}
+                onChange={(value) => setDate(value || [])}
                 range
                 numberOfMonths={2}
                 className="dateset-con"

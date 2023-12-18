@@ -119,7 +119,7 @@ const SecretFile = () => {
             <div className="inner-serachdiv1">
               <DatePicker
                 value={Dates}
-                onChange={setDate}
+                onChange={(value) => setDate(value || [])}
                 containerStyle={{
                   margin: "10px",
 

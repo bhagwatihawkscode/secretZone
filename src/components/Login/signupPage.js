@@ -58,12 +58,13 @@ const SignupPage = () => {
 
         if (response.ok) {
           const responseData = await response.json();
-          const { success, message } = responseData;
+          const { success, message, token } = responseData;
 
           if (success) {
             handleSuccess(message);
+            localStorage.setItem("token", token);
             setTimeout(() => {
-              navigate("/login");
+              navigate("/DashBoard");
             }, 2000);
           } else {
             handleError(message);

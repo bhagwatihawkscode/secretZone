@@ -83,7 +83,7 @@ const FavSecretlist = () => {
             <div className="inner-serachdiv1">
               <DatePicker
                 value={Dates}
-                onChange={setDate}
+                onChange={(value) => setDate(value || [])}
                 range
                 containerStyle={{
                   margin: "10px",

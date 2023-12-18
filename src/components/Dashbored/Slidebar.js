@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { IconButton } from "@mui/material";
 import logo from "../../assests/logo.png";
 
-const Slidebar = ({ onClose }) => {
+const Slidebar = ({ onClose, room }) => {
   const handleLogoutClick = () => {
     localStorage.clear();
 
@@ -31,7 +31,7 @@ const Slidebar = ({ onClose }) => {
         <ul>
           <li>
             <Link to="/DashBoard">Dashboard</Link>
-          </li> 
+          </li>
           <li>
             <Link to="/Secretlist">Secrets List</Link>
           </li>
@@ -41,6 +41,18 @@ const Slidebar = ({ onClose }) => {
           <li>
             <Link to="/SecretFile">Secrets File</Link>
           </li>
+          {/* <li>
+            <Link
+              to={{
+                pathname: "/SecretRoom",
+              }}
+              state={{
+                room: room,
+              }}
+            >
+              Secrets Room
+            </Link>
+          </li> */}
           <li>
             <Link
               onClick={() => {

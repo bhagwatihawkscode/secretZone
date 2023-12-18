@@ -24,7 +24,7 @@ const Dashboard = ({ children }) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [roomid, setroomid] = useState(localStorage.getItem("roomid"));
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const openModal = () => {
@@ -133,11 +133,19 @@ const Dashboard = ({ children }) => {
             } else {
               const responseData = await response.json();
               const { data } = responseData;
+
+              setroomid(data._id);
+              localStorage.setItem("roomid", data._id);
               // Update state and local storage with user profile image URL
+              const defaultProfileImage =
+                "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png";
+
               const userProfileImage =
-                data.profileImage === ""
-                  ? "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png"
+                data.profileImage === "" ||
+                !localStorage.getItem("userProfileImage")
+                  ? defaultProfileImage
                   : `https://res.cloudinary.com/dsvlrlr51/image/upload/${data.profileImage}`;
+
               setuserprofile(userProfileImage);
 
               // Fetch notifications
@@ -187,7 +195,7 @@ const Dashboard = ({ children }) => {
 
   return (
     <div className="dashboard-container">
-      {showSlide && <Slidebar onClose={toggleSlidebar} />}
+      {showSlide && <Slidebar onClose={toggleSlidebar} room={roomid} />}
       <div className="settle">
         <header>
           <div className="heading">
